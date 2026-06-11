@@ -45,13 +45,9 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .tdots span:nth-child(2){background:#22dd88;animation-delay:0.2s;}
 .tdots span:nth-child(3){background:#4db8ff;animation-delay:0.4s;}
 @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
-.quick-row{padding:0 22px 12px;display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:2;}
+.quick-row{padding:0 22px 12px;display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:2;min-height:0;}
 .qb{background:transparent;border:1px solid #ffffff0f;border-radius:6px;padding:5px 13px;font-size:10px;color:#5a8aaa;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.3px;}
 .qb:hover{border-color:#4db8ff33;color:#4db8ff;background:#4db8ff08;}
-.qb.checklist{border-color:#00c85322;color:#00c853;}
-.qb.checklist:hover{border-color:#00c85355;background:#00c85308;}
-.qb.hazard{border-color:#f5a62322;color:#f5a623;}
-.qb.hazard:hover{border-color:#f5a62355;background:#f5a62308;}
 .input-row{padding:12px 22px;border-top:1px solid #ffffff08;display:flex;gap:10px;align-items:flex-end;position:relative;z-index:2;}
 textarea{flex:1;background:#0a1a2a;border:1px solid #ffffff0f;border-radius:8px;padding:10px 14px;color:#c8dde8;font-family:'Inter',sans-serif;font-size:12px;font-weight:300;resize:none;outline:none;min-height:42px;max-height:80px;transition:border-color 0.2s;}
 textarea:focus{border-color:#4db8ff33;}
@@ -88,7 +84,7 @@ textarea::placeholder{color:#2a4a5a;}
   <div class="msg ai">
     <div class="av ai"><canvas id="avc" width="30" height="30"></canvas></div>
     <div>
-      <div class="bbl">Welcome. You are viewing <span style="color:#4db8ff;font-weight:500" id="compSpan">this component</span>. I can assist with inspection guidelines, failure analysis, maintenance schedules, and safety protocols. What would you like to know?</div>
+      <div class="bbl">Welcome. You are viewing <span style="color:#4db8ff;font-weight:500" id="compSpan">this component</span>. What would you like to know?</div>
       <div class="msg-meta">AI SIMUSPHERE</div>
     </div>
   </div>
@@ -121,15 +117,10 @@ async function loadQuickButtons(){
   try{
     const r=await fetch('/component/'+encodeURIComponent(component));
     const data=await r.json();
-    const btns=[];
-    if(data.checklist&&data.checklist.length>0) btns.push({label:'Inspection checklist',q:'Walk me through the inspection checklist for this component.',cls:'checklist'});
-    if(data.hazards&&data.hazards.length>0) btns.push({label:'Safety hazards',q:'What are the safety hazards for this component?',cls:'hazard'});
-    btns.push({label:'How does it work?',q:'Explain how this component works.',cls:''});
-    btns.push({label:'Common failures',q:'What are the common failure modes?',cls:''});
-    row.innerHTML=btns.map(b=>`<button class="qb ${b.cls}" onclick="sendQ('${b.q.replace(/'/g,"\\'")}')"> ${b.label}</button>`).join('');
-  }catch(e){
-    row.innerHTML=`<button class="qb" onclick="sendQ('How does this component work?')">How does it work?</button><button class="qb" onclick="sendQ('What are common failure modes?')">Common failures</button>`;
-  }
+    const btns=data.buttons||[];
+    if(btns.length===0){row.innerHTML='';return;}
+    row.innerHTML=btns.map(b=>`<button class="qb" onclick="sendQ('${b.question.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')">${b.label}</button>`).join('');
+  }catch(e){row.innerHTML='';}
 }
 loadQuickButtons();
 function drawOrb(canvas,size,speed){
