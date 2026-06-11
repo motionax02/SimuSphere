@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>Admin - SimuSphere</title>
+<style>
+body{font-family:Arial;background:#0a0a0a;color:#fff;padding:20px;max-width:800px;margin:0 auto}
+h1{color:#00963c}
+input,textarea{width:100%;padding:10px;margin:8px 0;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:6px;box-sizing:border-box}
+button{background:#00963c;color:#fff;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;margin:5px}
+button:hover{background:#007a30}
+.card{background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:15px;margin:10px 0}
+.del{background:#c0392b;float:left}
+#msg{color:#4db8ff;margin:10px 0}
+</style>
+</head>
+<body>
+<h1>⚙️ SimuSphere Admin</h1>
+<div class="card">
+  <h3>إضافة / تعديل مكون</h3>
+  <input id="compName" placeholder="اسم المكون (مثال: Demister Pad)">
+  <textarea id="compInfo" rows="5" placeholder="معلومات المكون - وظيفته، مشاكله، ملاحظات..."></textarea>
+  <button onclick="save()">💾 حفظ</button>
+</div>
+<div id="msg"></div>
+<div id="list"></div>
+<script>
+async function load(){
+  const r=await fetch('/admin/knowledge');
+  const d=await r.json();
+  const list=document.getElementById('list');
+  list.innerHTML='<h3>المكونات المحفوظة:</h3>';
+  if(Object.keys(d).length===0){list.innerHTML+='<p>لا يوجد مكونات بعد</p>';return;}
+  for(const k in d){
+    list.innerHTML+=`<div class="card"><b>${k}</b><p>${d[k]}</p><button class="del" onclick="del('${k}')">🗑 حذف</button></div>`;
+  }
+}
+async function save(){
+  const name=document.getElementById('compName').value.trim();
+  const info=document.getElementById('compInfo').value.trim();
+  if(!name||!info){alert('املأ الاسم والمعلومات');return;}
+  await fetch('/admin/knowledge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,info})});
+  document.getElementById('msg').textContent='✅ تم الحفظ!';
+  document.getElementById('compName').value='';
+  document.getElementById('compInfo').value='';
+  setTimeout(()=>document.getElementById('msg').textContent='',3000);
+  load();
+}
+async function del(name){
+  if(!confirm('حذف '+name+'؟'))return;
+  await fetch('/admin/knowledge/'+encodeURIComponent(name),{method:'DELETE'});
+  load();
+}
+load();
+</script>
+</body>
+</html>
