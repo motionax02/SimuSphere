@@ -20,14 +20,9 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .logo-wrap{display:flex;align-items:center;gap:12px;flex-shrink:0;}
 .brand{display:flex;flex-direction:column;gap:1px;}
 .brand-name{font-family:'Orbitron',monospace;font-size:19px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#4db8ff,#00c853);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.brand-sub{font-size:9px;color:#4a7a9a;letter-spacing:3px;font-weight:400;}
+.brand-sub{font-size:9px;color:#4a7a9a;letter-spacing:3px;}
 .sep{width:1px;height:38px;background:linear-gradient(to bottom,transparent,#ffffff15,transparent);flex-shrink:0;}
 .header-mid{flex:1;}
-.header-title{font-size:11px;color:#7aa8c0;letter-spacing:2px;font-weight:300;margin-bottom:6px;}
-.header-pills{display:flex;gap:8px;}
-.pill{padding:3px 10px;border-radius:20px;font-size:9px;letter-spacing:1px;font-weight:500;}
-.pill-green{background:#00c85314;border:1px solid #00c85344;color:#00c853;}
-.pill-blue{background:#4db8ff14;border:1px solid #4db8ff44;color:#4db8ff;}
 .comp-box{flex-shrink:0;text-align:right;}
 .comp-label{font-size:8px;color:#4a7a9a;letter-spacing:2px;margin-bottom:3px;}
 .comp-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#4db8ff;letter-spacing:1px;}
@@ -35,7 +30,7 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .msg{display:flex;gap:10px;animation:fadeUp 0.3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 .msg.user{flex-direction:row-reverse;}
-.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'Orbitron',monospace;position:relative;}
+.av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'Orbitron',monospace;}
 .av.ai{background:linear-gradient(135deg,#003366,#004d1a);border:1px solid #4db8ff55;}
 .av.usr{background:linear-gradient(135deg,#1a0f00,#0f1a00);border:1px solid #f5a62355;color:#f5a623;}
 .bbl{max-width:76%;padding:10px 14px;font-size:12px;line-height:1.7;font-weight:300;}
@@ -51,8 +46,12 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .tdots span:nth-child(3){background:#4db8ff;animation-delay:0.4s;}
 @keyframes tdot{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
 .quick-row{padding:0 22px 12px;display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:2;}
-.qb{background:transparent;border:1px solid #ffffff0f;border-radius:6px;padding:5px 13px;font-size:10px;color:#5a8aaa;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0.3px;}
+.qb{background:transparent;border:1px solid #ffffff0f;border-radius:6px;padding:5px 13px;font-size:10px;color:#5a8aaa;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.3px;}
 .qb:hover{border-color:#4db8ff33;color:#4db8ff;background:#4db8ff08;}
+.qb.checklist{border-color:#00c85322;color:#00c853;}
+.qb.checklist:hover{border-color:#00c85355;background:#00c85308;}
+.qb.hazard{border-color:#f5a62322;color:#f5a623;}
+.qb.hazard:hover{border-color:#f5a62355;background:#f5a62308;}
 .input-row{padding:12px 22px;border-top:1px solid #ffffff08;display:flex;gap:10px;align-items:flex-end;position:relative;z-index:2;}
 textarea{flex:1;background:#0a1a2a;border:1px solid #ffffff0f;border-radius:8px;padding:10px 14px;color:#c8dde8;font-family:'Inter',sans-serif;font-size:12px;font-weight:300;resize:none;outline:none;min-height:42px;max-height:80px;transition:border-color 0.2s;}
 textarea:focus{border-color:#4db8ff33;}
@@ -62,7 +61,7 @@ textarea::placeholder{color:#2a4a5a;}
 .sbtn:disabled{background:#0a1a2a;cursor:not-allowed;transform:none;}
 .sbtn svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 .footer{padding:7px 22px;border-top:1px solid #ffffff06;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
-.footer-l{font-size:8px;color:#1a3a4a;letter-spacing:1.5px;font-weight:400;}
+.footer-l{font-size:8px;color:#1a3a4a;letter-spacing:1.5px;}
 .footer-r{font-size:8px;color:#2a5a4a;letter-spacing:1px;font-family:'Orbitron',monospace;}
 </style>
 </head>
@@ -79,23 +78,17 @@ textarea::placeholder{color:#2a4a5a;}
     </div>
   </div>
   <div class="sep"></div>
-  <div class="header-mid">
-    
-    <div class="header-pills">
-      
-      
-    </div>
-  </div>
+  <div class="header-mid"></div>
   <div class="comp-box">
     <div class="comp-label">CURRENTLY VIEWING</div>
-    <div class="comp-name" id="compName">DEMISTER PAD</div>
+    <div class="comp-name" id="compName">—</div>
   </div>
 </div>
 <div class="messages" id="msgs">
   <div class="msg ai">
     <div class="av ai"><canvas id="avc" width="30" height="30"></canvas></div>
     <div>
-      <div class="bbl">Welcome. You are viewing <span style="color:#4db8ff;font-weight:500" id="compSpan">Demister Pad</span>. I can provide inspection guidelines, failure analysis, maintenance schedules, and safety protocols for this component. What would you like to know?</div>
+      <div class="bbl">Welcome. You are viewing <span style="color:#4db8ff;font-weight:500" id="compSpan">this component</span>. I can assist with inspection guidelines, failure analysis, maintenance schedules, and safety protocols. What would you like to know?</div>
       <div class="msg-meta">AI SIMUSPHERE</div>
     </div>
   </div>
@@ -107,12 +100,7 @@ textarea::placeholder{color:#2a4a5a;}
     </div>
   </div>
 </div>
-<div class="quick-row">
-  <button class="qb" onclick="sendQ('What should inspectors check here?')">Inspection checklist</button>
-  
-  
-  <button class="qb" onclick="sendQ('What are the safety hazards for this component?')">Safety hazards</button>
-</div>
+<div class="quick-row" id="quickRow"></div>
 <div class="input-row">
   <textarea id="inp" placeholder="Ask about this component..." rows="1"></textarea>
   <button class="sbtn" id="sendBtn" onclick="send()">
@@ -125,9 +113,25 @@ textarea::placeholder{color:#2a4a5a;}
 </div>
 <script>
 const params=new URLSearchParams(window.location.search);
-const component=params.get('component')||'Demister Pad';
+const component=params.get('component')||'Component';
 document.getElementById('compName').textContent=component.toUpperCase();
 document.getElementById('compSpan').textContent=component;
+async function loadQuickButtons(){
+  const row=document.getElementById('quickRow');
+  try{
+    const r=await fetch('/component/'+encodeURIComponent(component));
+    const data=await r.json();
+    const btns=[];
+    if(data.checklist&&data.checklist.length>0) btns.push({label:'Inspection checklist',q:'Walk me through the inspection checklist for this component.',cls:'checklist'});
+    if(data.hazards&&data.hazards.length>0) btns.push({label:'Safety hazards',q:'What are the safety hazards for this component?',cls:'hazard'});
+    btns.push({label:'How does it work?',q:'Explain how this component works.',cls:''});
+    btns.push({label:'Common failures',q:'What are the common failure modes?',cls:''});
+    row.innerHTML=btns.map(b=>`<button class="qb ${b.cls}" onclick="sendQ('${b.q.replace(/'/g,"\\'")}')"> ${b.label}</button>`).join('');
+  }catch(e){
+    row.innerHTML=`<button class="qb" onclick="sendQ('How does this component work?')">How does it work?</button><button class="qb" onclick="sendQ('What are common failure modes?')">Common failures</button>`;
+  }
+}
+loadQuickButtons();
 function drawOrb(canvas,size,speed){
   const ctx=canvas.getContext('2d');let a=0,pulse=0;
   function draw(){
@@ -156,11 +160,9 @@ function getTime(){return new Date().toTimeString().slice(0,8);}
 function addMsg(role,text){
   const msgs=document.getElementById('msgs');
   const typing=document.getElementById('typing');
-  const div=document.createElement('div');
-  div.className='msg '+role;
+  const div=document.createElement('div');div.className='msg '+role;
   const isAI=role==='ai';
-  let avHTML=isAI?'<canvas width="30" height="30"></canvas>':'YOU';
-  div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+avHTML+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+'</div></div>';
+  div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+(isAI?'<canvas width="30" height="30"></canvas>':'YOU')+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+'</div></div>';
   msgs.insertBefore(div,typing);
   if(isAI){const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);}
   msgs.scrollTop=msgs.scrollHeight;
