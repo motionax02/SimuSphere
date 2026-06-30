@@ -48,7 +48,7 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .quick-row{padding:0 22px 12px;display:flex;gap:7px;flex-wrap:wrap;position:relative;z-index:2;min-height:0;}
 .qb{background:transparent;border:1px solid #ffffff0f;border-radius:6px;padding:5px 13px;font-size:10px;color:#5a8aaa;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.3px;}
 .qb:hover{border-color:#4db8ff33;color:#4db8ff;background:#4db8ff08;}
-.input-row{padding:12px 22px;border-top:1px solid #ffffff08;display:flex;gap:10px;align-items:flex-end;position:relative;z-index:2;}
+.input-row{padding:12px 22px;border-top:1px solid #ffffff08;display:flex;gap:8px;align-items:flex-end;position:relative;z-index:2;}
 textarea{flex:1;background:#0a1a2a;border:1px solid #ffffff0f;border-radius:8px;padding:10px 14px;color:#c8dde8;font-family:'Inter',sans-serif;font-size:12px;font-weight:300;resize:none;outline:none;min-height:42px;max-height:80px;transition:border-color 0.2s;}
 textarea:focus{border-color:#4db8ff33;}
 textarea::placeholder{color:#2a4a5a;}
@@ -56,6 +56,20 @@ textarea::placeholder{color:#2a4a5a;}
 .sbtn:hover{background:linear-gradient(135deg,#0066cc,#009944);transform:scale(1.04);}
 .sbtn:disabled{background:#0a1a2a;cursor:not-allowed;transform:none;}
 .sbtn svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.mic-btn{width:42px;height:42px;border-radius:8px;background:#0a1a2a;border:1px solid #ffffff0f;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.mic-btn:hover{border-color:#4db8ff33;}
+.mic-btn.listening{background:#cc000022;border-color:#cc0000aa;animation:pulse-mic 1s ease-in-out infinite;}
+.mic-btn.listening svg{stroke:#ff4444;}
+.mic-btn.retrying{background:#f5a62322;border-color:#f5a62366;}
+.mic-btn.retrying svg{stroke:#f5a623;}
+@keyframes pulse-mic{0%,100%{box-shadow:0 0 0 0 #cc000033;}50%{box-shadow:0 0 0 6px #cc000000;}}
+.mic-btn svg{width:16px;height:16px;fill:none;stroke:#5a8aaa;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.2s;}
+.voice-status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0a1a2aee;border:1px solid #4db8ff33;border-radius:12px;padding:20px 30px;text-align:center;font-size:12px;color:#4db8ff;letter-spacing:1px;z-index:100;display:none;backdrop-filter:blur(10px);}
+.voice-status.show{display:block;}
+.voice-status .vs-dots{margin-top:10px;}
+.voice-status .vs-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4db8ff;margin:0 3px;animation:tdot 1.4s ease-in-out infinite;}
+.voice-status .vs-dots span:nth-child(2){animation-delay:0.2s;}
+.voice-status .vs-dots span:nth-child(3){animation-delay:0.4s;}
 .footer{padding:7px 22px;border-top:1px solid #ffffff06;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
 .footer-l{font-size:8px;color:#1a3a4a;letter-spacing:1.5px;}
 .footer-r{font-size:8px;color:#2a5a4a;letter-spacing:1px;font-family:'Orbitron',monospace;}
@@ -99,9 +113,16 @@ textarea::placeholder{color:#2a4a5a;}
 <div class="quick-row" id="quickRow"></div>
 <div class="input-row">
   <textarea id="inp" placeholder="Ask about this component..." rows="1"></textarea>
+  <button class="mic-btn" id="micBtn" onclick="toggleMic()" title="Voice input">
+    <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>
+  </button>
   <button class="sbtn" id="sendBtn" onclick="send()">
     <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
   </button>
+</div>
+<div class="voice-status" id="voiceStatus">
+  <div id="vsText">LISTENING...</div>
+  <div class="vs-dots"><span></span><span></span><span></span></div>
 </div>
 <div class="footer">
   <span class="footer-l">CENTRAL GHAWAR PRODUCING DEPARTMENT</span>
@@ -112,6 +133,7 @@ const params=new URLSearchParams(window.location.search);
 const component=params.get('component')||'Component';
 document.getElementById('compName').textContent=component.toUpperCase();
 document.getElementById('compSpan').textContent=component;
+
 async function loadQuickButtons(){
   const row=document.getElementById('quickRow');
   try{
@@ -123,6 +145,69 @@ async function loadQuickButtons(){
   }catch(e){row.innerHTML='';}
 }
 loadQuickButtons();
+
+// Voice
+let recognition=null;
+let isListening=false;
+
+function initRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return null;
+  const r=new SR();
+  r.lang='en-US';
+  r.interimResults=false;
+  r.maxAlternatives=1;
+  r.onresult=e=>{
+    const text=e.results[0][0].transcript;
+    stopListening();
+    if(text.trim()){
+      document.getElementById('inp').value=text;
+      send();
+    }
+  };
+  r.onerror=e=>{
+    stopListening();
+    if(e.error==='no-speech'){
+      showVoiceStatus('No speech detected — tap 🎤 to retry',1500);
+    }
+  };
+  r.onend=()=>{ if(isListening) stopListening(); };
+  return r;
+}
+
+function toggleMic(){
+  if(isListening){ stopListening(); return; }
+  startListening();
+}
+
+function startListening(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ showVoiceStatus('Voice not supported on this browser',1500); return; }
+  recognition=initRecognition();
+  recognition.start();
+  isListening=true;
+  const btn=document.getElementById('micBtn');
+  btn.classList.add('listening');
+  showVoiceStatus('LISTENING...',0);
+}
+
+function stopListening(){
+  isListening=false;
+  if(recognition){ try{recognition.stop();}catch(e){} recognition=null; }
+  document.getElementById('micBtn').classList.remove('listening','retrying');
+  hideVoiceStatus();
+}
+
+function showVoiceStatus(msg,duration){
+  const vs=document.getElementById('voiceStatus');
+  document.getElementById('vsText').textContent=msg;
+  vs.classList.add('show');
+  if(duration>0) setTimeout(hideVoiceStatus,duration);
+}
+function hideVoiceStatus(){
+  document.getElementById('voiceStatus').classList.remove('show');
+}
+
 function drawOrb(canvas,size,speed){
   const ctx=canvas.getContext('2d');let a=0,pulse=0;
   function draw(){
@@ -147,6 +232,7 @@ function drawOrb(canvas,size,speed){
 }
 drawOrb(document.getElementById('lc'),42,0.006);
 drawOrb(document.getElementById('avc'),30,0.01);
+
 function getTime(){return new Date().toTimeString().slice(0,8);}
 function addMsg(role,text){
   const msgs=document.getElementById('msgs');
