@@ -8,6 +8,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100vh;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+/* Splash */
+#splash{position:fixed;inset:0;background:#050e1a;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;transition:opacity 0.8s ease;}
+#splash.hide{opacity:0;pointer-events:none;}
+.splash-logo{width:180px;opacity:0;animation:fadeInUp 0.8s ease 0.3s forwards;}
+.splash-div{width:1px;height:60px;background:linear-gradient(to bottom,transparent,#ffffff20,transparent);opacity:0;animation:fadeInUp 0.6s ease 0.7s forwards;}
+.splash-brand{text-align:center;opacity:0;animation:fadeInUp 0.8s ease 0.9s forwards;}
+.splash-brand-name{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#4db8ff,#00c853);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.splash-brand-sub{font-size:10px;color:#4a7a9a;letter-spacing:4px;margin-top:6px;}
+.splash-bar{width:180px;height:1px;background:#ffffff08;border-radius:1px;overflow:hidden;opacity:0;animation:fadeInUp 0.6s ease 1.2s forwards;}
+.splash-bar-fill{height:100%;background:linear-gradient(90deg,#4db8ff,#00c853);width:0%;animation:fillBar 1.5s ease 1.4s forwards;}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fillBar{from{width:0%;}to{width:100%;}}
+
 .bg-glow{position:fixed;inset:0;pointer-events:none;overflow:hidden;}
 .bg-glow::before{content:'';position:absolute;top:-20%;left:-10%;width:60%;height:60%;background:radial-gradient(ellipse,#003d6622 0%,transparent 70%);animation:drift1 8s ease-in-out infinite alternate;}
 .bg-glow::after{content:'';position:absolute;bottom:-20%;right:-10%;width:50%;height:50%;background:radial-gradient(ellipse,#00531e22 0%,transparent 70%);animation:drift2 10s ease-in-out infinite alternate;}
@@ -23,9 +37,13 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .brand-sub{font-size:9px;color:#4a7a9a;letter-spacing:3px;}
 .sep{width:1px;height:38px;background:linear-gradient(to bottom,transparent,#ffffff15,transparent);flex-shrink:0;}
 .header-mid{flex:1;}
-.comp-box{flex-shrink:0;text-align:right;}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.comp-box{text-align:right;}
 .comp-label{font-size:8px;color:#4a7a9a;letter-spacing:2px;margin-bottom:3px;}
 .comp-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#4db8ff;letter-spacing:1px;}
+.fs-btn{width:32px;height:32px;background:transparent;border:1px solid #ffffff0d;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.fs-btn:hover{border-color:#4db8ff33;background:#4db8ff08;}
+.fs-btn svg{width:14px;height:14px;fill:none;stroke:#4a7a9a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .messages{flex:1;overflow-y:auto;padding:16px 22px;display:flex;flex-direction:column;gap:12px;position:relative;z-index:2;scrollbar-width:thin;scrollbar-color:#ffffff10 transparent;}
 .msg{display:flex;gap:10px;animation:fadeUp 0.3s ease;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
@@ -79,6 +97,18 @@ textarea::placeholder{color:#2a4a5a;}
 </style>
 </head>
 <body>
+
+<!-- Splash Screen -->
+<div id="splash">
+  <img class="splash-logo" src="/aramco-logo.png" alt="Aramco">
+  <div class="splash-div"></div>
+  <div class="splash-brand">
+    <div class="splash-brand-name">SimuSphere</div>
+    <div class="splash-brand-sub">NEW LEARNING METHOD</div>
+  </div>
+  <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+</div>
+
 <div class="bg-glow"></div>
 <div class="grid-bg"></div>
 <div class="scan-line"></div>
@@ -92,9 +122,14 @@ textarea::placeholder{color:#2a4a5a;}
   </div>
   <div class="sep"></div>
   <div class="header-mid"></div>
-  <div class="comp-box">
-    <div class="comp-label">CURRENTLY VIEWING</div>
-    <div class="comp-name" id="compName">—</div>
+  <div class="header-right">
+    <div class="comp-box">
+      <div class="comp-label">CURRENTLY VIEWING</div>
+      <div class="comp-name" id="compName">—</div>
+    </div>
+    <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="Fullscreen">
+      <svg id="fsIcon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+    </button>
   </div>
 </div>
 <div class="messages" id="msgs">
@@ -141,6 +176,26 @@ const component=params.get('component')||'Component';
 document.getElementById('compName').textContent=component.toUpperCase();
 document.getElementById('compSpan').textContent=component;
 
+// Splash — hide after 3s
+setTimeout(()=>document.getElementById('splash').classList.add('hide'),3000);
+
+// Fullscreen
+function toggleFullscreen(){
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen().catch(()=>{});
+    document.getElementById('fsIcon').innerHTML='<path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>';
+  } else {
+    document.exitFullscreen().catch(()=>{});
+    document.getElementById('fsIcon').innerHTML='<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement){
+    document.getElementById('fsIcon').innerHTML='<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>';
+  }
+});
+
+// Quick buttons
 async function loadQuickButtons(){
   const row=document.getElementById('quickRow');
   try{
@@ -170,29 +225,20 @@ function speakAI(text,btn){
 function speakText(btn){
   const text=btn.getAttribute('data-text');
   if(window.speechSynthesis.speaking&&currentSpeakBtn===btn){
-    window.speechSynthesis.cancel();
-    btn.classList.remove('speaking');currentSpeakBtn=null;return;
+    window.speechSynthesis.cancel();btn.classList.remove('speaking');currentSpeakBtn=null;return;
   }
   speakAI(text,btn);
 }
 
 // Voice input
-let recognition=null;
-let isListening=false;
+let recognition=null,isListening=false;
 function initRecognition(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR)return null;
   const r=new SR();
   r.lang='en-US';r.interimResults=false;r.maxAlternatives=1;
-  r.onresult=e=>{
-    const text=e.results[0][0].transcript;
-    stopListening();
-    if(text.trim()){document.getElementById('inp').value=text;send();}
-  };
-  r.onerror=e=>{
-    stopListening();
-    if(e.error==='no-speech') showVoiceStatus('No speech detected — tap 🎤 to retry',1500);
-  };
+  r.onresult=e=>{const text=e.results[0][0].transcript;stopListening();if(text.trim()){document.getElementById('inp').value=text;send();}};
+  r.onerror=e=>{stopListening();if(e.error==='no-speech')showVoiceStatus('No speech detected — tap 🎤 to retry',1500);};
   r.onend=()=>{if(isListening)stopListening();};
   return r;
 }
@@ -251,7 +297,11 @@ function addMsg(role,text){
   const speakBtnHTML=isAI?`<button class="speak-btn" onclick="speakText(this)" data-text="${text.replace(/"/g,'&quot;')}"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>`:'';
   div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+(isAI?'<canvas width="30" height="30"></canvas>':'YOU')+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+speakBtnHTML+'</div></div>';
   msgs.insertBefore(div,typing);
-  if(isAI){const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);const sb=div.querySelector('.speak-btn');if(sb)setTimeout(()=>speakAI(text,sb),300);}
+  if(isAI){
+    const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);
+    const sb=div.querySelector('.speak-btn');
+    if(sb)setTimeout(()=>speakAI(text,sb),300);
+  }
   msgs.scrollTop=msgs.scrollHeight;
 }
 function setTyping(on){document.getElementById('typing').className='typing'+(on?' active':'');document.getElementById('msgs').scrollTop=99999;}
