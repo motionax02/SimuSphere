@@ -16,19 +16,50 @@ body{background:#070f1a;color:#c8dde8;font-family:'Segoe UI',Arial,sans-serif;mi
 .login-box button{width:100%;padding:12px;background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:8px;color:#fff;font-size:13px;letter-spacing:1px;cursor:pointer;}
 .login-err{color:#e74c3c;font-size:11px;margin-top:10px;min-height:16px;}
 #adminApp{display:none;}
-.topbar{background:#0d1e30;border-bottom:1px solid #ffffff0d;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
+.topbar{background:#0d1e30;border-bottom:1px solid #ffffff0d;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
 .topbar-title{font-size:15px;font-weight:700;letter-spacing:2px;color:#4db8ff;}
 .topbar-sub{font-size:10px;color:#4a7a9a;letter-spacing:1px;margin-top:2px;}
-.logout-btn{background:transparent;border:1px solid #ffffff15;color:#5a8aaa;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.logout-btn{background:transparent;border:1px solid #ffffff15;color:#5a8aaa;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;letter-spacing:1px;}
 .logout-btn:hover{border-color:#e74c3c44;color:#e74c3c;}
-.container{max-width:860px;margin:0 auto;padding:28px 20px;}
-.section{background:#0d1e30;border:1px solid #ffffff0d;border-radius:10px;padding:24px;margin-bottom:20px;}
-.section-title{font-size:12px;letter-spacing:2px;color:#4db8ff;font-weight:600;margin-bottom:18px;text-transform:uppercase;}
+/* Nav tabs */
+.nav-tabs{display:flex;gap:4px;background:#060e18;padding:4px;border-radius:8px;}
+.nav-tab{padding:6px 16px;border-radius:6px;font-size:11px;letter-spacing:1px;cursor:pointer;border:none;background:transparent;color:#4a7a9a;transition:all 0.2s;}
+.nav-tab.active{background:#0d1e30;color:#4db8ff;}
+.nav-tab:hover:not(.active){color:#8ab0c8;}
+.container{max-width:960px;margin:0 auto;padding:24px 20px;}
+.page{display:none;}
+.page.active{display:block;}
+/* Cards */
+.section{background:#0d1e30;border:1px solid #ffffff0d;border-radius:10px;padding:24px;margin-bottom:16px;}
+.section-title{font-size:11px;letter-spacing:2px;color:#4db8ff;font-weight:600;margin-bottom:16px;text-transform:uppercase;}
+/* Dashboard stats */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+.stat-card{background:#060e18;border:1px solid #ffffff0d;border-radius:8px;padding:18px;text-align:center;}
+.stat-num{font-size:32px;font-weight:700;color:#4db8ff;font-family:'Segoe UI',sans-serif;}
+.stat-label{font-size:10px;color:#3a6a7a;margin-top:4px;letter-spacing:1px;}
+.stat-card.green .stat-num{color:#00c853;}
+.stat-card.amber .stat-num{color:#f5a623;}
+/* Top components list */
+.top-list{display:flex;flex-direction:column;gap:8px;}
+.top-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#060e18;border:1px solid #ffffff0d;border-radius:7px;}
+.top-item-name{flex:1;font-size:12px;color:#c8dde8;}
+.top-item-bar-wrap{flex:2;height:4px;background:#ffffff08;border-radius:2px;overflow:hidden;}
+.top-item-bar{height:100%;background:linear-gradient(90deg,#4db8ff,#00c853);border-radius:2px;transition:width 0.6s ease;}
+.top-item-count{font-size:11px;color:#4a7a9a;min-width:32px;text-align:right;}
+/* Recent questions */
+.q-list{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;}
+.q-item{padding:8px 12px;background:#060e18;border:1px solid #ffffff0d;border-radius:6px;}
+.q-item-comp{font-size:9px;color:#4db8ff;letter-spacing:1px;margin-bottom:2px;}
+.q-item-text{font-size:11px;color:#8aacbe;}
+.q-item-time{font-size:9px;color:#2a4a5a;margin-top:2px;}
+/* Forms */
 label{display:block;font-size:10px;letter-spacing:1.5px;color:#4a7a9a;margin-bottom:6px;margin-top:14px;}
 label:first-of-type{margin-top:0;}
-input[type=text],input[type=password],textarea{width:100%;padding:10px 14px;background:#060e18;border:1px solid #ffffff0d;border-radius:7px;color:#c8dde8;font-size:12px;font-family:inherit;outline:none;transition:border-color 0.2s;}
-input[type=text]:focus,input[type=password]:focus,textarea:focus{border-color:#4db8ff33;}
+input[type=text],input[type=password],textarea,select{width:100%;padding:10px 14px;background:#060e18;border:1px solid #ffffff0d;border-radius:7px;color:#c8dde8;font-size:12px;font-family:inherit;outline:none;transition:border-color 0.2s;}
+input[type=text]:focus,input[type=password]:focus,textarea:focus,select:focus{border-color:#4db8ff33;}
 textarea{resize:vertical;min-height:80px;line-height:1.6;}
+select option{background:#0d1e30;}
 .list-field{background:#060e18;border:1px solid #ffffff0d;border-radius:7px;padding:10px;}
 .list-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .list-item input{flex:1;margin:0;}
@@ -37,26 +68,45 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 .rm-btn:hover{border-color:#e74c3c44;color:#e74c3c;}
 .add-item-btn{background:transparent;border:1px dashed #ffffff15;border-radius:6px;color:#4a7a9a;padding:7px 14px;font-size:11px;cursor:pointer;width:100%;margin-top:6px;letter-spacing:1px;}
 .add-item-btn:hover{border-color:#4db8ff44;color:#4db8ff;}
-.btn-row{display:flex;gap:10px;margin-top:20px;}
-.save-btn{background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:7px;color:#fff;padding:10px 24px;font-size:12px;letter-spacing:1px;cursor:pointer;flex:1;}
+.btn-row{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+.save-btn{background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:7px;color:#fff;padding:10px 24px;font-size:12px;letter-spacing:1px;cursor:pointer;flex:1;min-width:120px;}
 .save-btn:hover{opacity:0.9;}
-.clear-btn{background:transparent;border:1px solid #ffffff10;border-radius:7px;color:#5a7a8a;padding:10px 20px;font-size:12px;cursor:pointer;}
-.clear-btn:hover{border-color:#ffffff20;color:#8a9ab0;}
-.comp-grid{display:flex;flex-direction:column;gap:10px;}
-.comp-card{background:#060e18;border:1px solid #ffffff0d;border-radius:8px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
+.sec-btn{background:transparent;border:1px solid #ffffff10;border-radius:7px;color:#5a7a8a;padding:10px 18px;font-size:12px;cursor:pointer;letter-spacing:1px;}
+.sec-btn:hover{border-color:#ffffff20;color:#8a9ab0;}
+.danger-btn{background:transparent;border:1px solid #e74c3c44;border-radius:7px;color:#e74c3c88;padding:10px 18px;font-size:12px;cursor:pointer;letter-spacing:1px;}
+.danger-btn:hover{border-color:#e74c3c;color:#e74c3c;}
+/* Components list */
+.comp-grid{display:flex;flex-direction:column;gap:8px;}
+.comp-card{background:#060e18;border:1px solid #ffffff0d;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
 .comp-card-name{font-size:13px;font-weight:500;color:#c8dde8;}
 .comp-card-meta{font-size:10px;color:#3a6a7a;margin-top:3px;}
-.comp-card-actions{display:flex;gap:8px;}
-.edit-btn,.del-btn{background:transparent;border:1px solid #ffffff10;border-radius:5px;color:#4a7a9a;padding:5px 12px;font-size:10px;cursor:pointer;letter-spacing:1px;}
+.comp-card-actions{display:flex;gap:6px;flex-shrink:0;}
+.edit-btn,.del-btn,.copy-btn{background:transparent;border:1px solid #ffffff10;border-radius:5px;color:#4a7a9a;padding:4px 10px;font-size:10px;cursor:pointer;letter-spacing:1px;}
 .edit-btn:hover{border-color:#4db8ff44;color:#4db8ff;}
 .del-btn:hover{border-color:#e74c3c44;color:#e74c3c;}
-.empty{color:#2a4a5a;font-size:12px;padding:20px;text-align:center;}
-.pass-row{display:flex;gap:10px;align-items:flex-end;}
-.pass-row input{flex:1;}
-.pass-btn{background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:7px;color:#fff;padding:10px 20px;font-size:12px;cursor:pointer;white-space:nowrap;}
-.toast{position:fixed;bottom:28px;right:28px;background:#00c85322;border:1px solid #00c85355;color:#00c853;padding:10px 20px;border-radius:8px;font-size:12px;opacity:0;transition:opacity 0.3s;pointer-events:none;}
+.copy-btn:hover{border-color:#f5a62344;color:#f5a623;}
+.empty{color:#2a4a5a;font-size:12px;padding:20px;text-align:center;letter-spacing:1px;}
+/* Search */
+.search-wrap{position:relative;margin-bottom:12px;}
+.search-wrap input{padding-left:36px;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#2a4a5a;font-size:14px;}
+/* Pass row */
+.pass-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.pass-row input{flex:1;min-width:140px;}
+.pass-btn{background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:7px;color:#fff;padding:10px 20px;font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px;}
+/* AI Settings */
+.range-wrap{display:flex;align-items:center;gap:12px;}
+.range-wrap input[type=range]{flex:1;accent-color:#4db8ff;}
+.range-val{font-size:13px;color:#4db8ff;font-weight:600;min-width:36px;}
+/* Export/Import */
+.io-row{display:flex;gap:10px;flex-wrap:wrap;}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:10px 20px;border-radius:8px;font-size:12px;letter-spacing:1px;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:999;}
 .toast.show{opacity:1;}
-.toast.err{background:#e74c3c22;border-color:#e74c3c55;color:#e74c3c;}
+.toast.ok{background:#00c85322;border:1px solid #00c85355;color:#00c853;}
+.toast.err{background:#e74c3c22;border:1px solid #e74c3c55;color:#e74c3c;}
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#ffffff10;border-radius:2px;}
 </style>
 </head>
 <body>
@@ -69,72 +119,159 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
+
 <div id="adminApp">
   <div class="topbar">
     <div>
       <div class="topbar-title">SIMUSPHERE ADMIN</div>
       <div class="topbar-sub">VESSEL COMPONENT KNOWLEDGE BASE</div>
     </div>
-    <button class="logout-btn" onclick="logout()">SIGN OUT</button>
+    <div class="topbar-right">
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showPage('dashboard')">DASHBOARD</button>
+        <button class="nav-tab" onclick="showPage('components')">COMPONENTS</button>
+        <button class="nav-tab" onclick="showPage('settings')">SETTINGS</button>
+      </div>
+      <button class="logout-btn" onclick="logout()">SIGN OUT</button>
+    </div>
   </div>
+
   <div class="container">
 
-    <!-- Add/Edit Component -->
-    <div class="section">
-      <div class="section-title" id="formTitle">Add Component</div>
-      <label>COMPONENT NAME</label>
-      <input type="text" id="compName" placeholder="e.g. Demister Pad">
-      <label>GENERAL KNOWLEDGE <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
-      <textarea id="compInfo" rows="3" placeholder="Function, common issues, notes..."></textarea>
-      <label>INSPECTION CHECKLIST <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
-      <div class="list-field">
-        <div id="checklistItems"></div>
-        <button class="add-item-btn" onclick="addListItem('checklistItems','Inspection item...')">+ Add item</button>
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-label">TOTAL QUESTIONS</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="statComponents">—</div>
+          <div class="stat-label">COMPONENTS</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-num" id="statActive">—</div>
+          <div class="stat-label">ACTIVE COMPONENTS</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statLast" style="font-size:14px;padding-top:6px;">—</div>
+          <div class="stat-label">LAST ACTIVITY</div>
+        </div>
       </div>
-      <label>SAFETY HAZARDS <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
-      <div class="list-field">
-        <div id="hazardItems"></div>
-        <button class="add-item-btn" onclick="addListItem('hazardItems','Safety hazard...')">+ Add hazard</button>
+      <div class="section">
+        <div class="section-title">Most Used Components</div>
+        <div class="top-list" id="topComponents"><div class="empty">No data yet</div></div>
       </div>
-      <label>QUICK BUTTONS <span style="color:#2a4a5a;font-weight:300;">(shown on chat screen — label + question)</span></label>
-      <div class="list-field">
-        <div id="buttonItems"></div>
-        <button class="add-item-btn" onclick="addButtonItem()">+ Add button</button>
-      </div>
-      <div class="btn-row">
-        <button class="save-btn" onclick="save()">SAVE COMPONENT</button>
-        <button class="clear-btn" onclick="clearForm()">CLEAR</button>
+      <div class="section">
+        <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Recent Questions</span>
+          <button class="danger-btn" style="padding:4px 12px;font-size:10px;" onclick="clearStats()">CLEAR STATS</button>
+        </div>
+        <div class="q-list" id="recentQuestions"><div class="empty">No questions yet</div></div>
       </div>
     </div>
 
-    <!-- Saved Components -->
-    <div class="section">
-      <div class="section-title">Saved Components</div>
-      <div class="comp-grid" id="compList"><div class="empty">No components yet</div></div>
+    <!-- COMPONENTS -->
+    <div class="page" id="page-components">
+      <div class="section">
+        <div class="section-title" id="formTitle">Add Component</div>
+        <label>COMPONENT NAME</label>
+        <input type="text" id="compName" placeholder="e.g. Demister Pad">
+        <label>GENERAL KNOWLEDGE <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
+        <textarea id="compInfo" rows="3" placeholder="Function, common issues, notes..."></textarea>
+        <label>INSPECTION CHECKLIST <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
+        <div class="list-field">
+          <div id="checklistItems"></div>
+          <button class="add-item-btn" onclick="addListItem('checklistItems','Inspection item...')">+ Add item</button>
+        </div>
+        <label>SAFETY HAZARDS <span style="color:#2a4a5a;font-weight:300;">(optional)</span></label>
+        <div class="list-field">
+          <div id="hazardItems"></div>
+          <button class="add-item-btn" onclick="addListItem('hazardItems','Safety hazard...')">+ Add hazard</button>
+        </div>
+        <label>QUICK BUTTONS <span style="color:#2a4a5a;font-weight:300;">(label → question)</span></label>
+        <div class="list-field">
+          <div id="buttonItems"></div>
+          <button class="add-item-btn" onclick="addButtonItem()">+ Add button</button>
+        </div>
+        <div class="btn-row">
+          <button class="save-btn" onclick="save()">SAVE COMPONENT</button>
+          <button class="sec-btn" onclick="clearForm()">CLEAR</button>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+          <span>Saved Components</span>
+          <div style="display:flex;gap:8px;">
+            <button class="sec-btn" style="padding:4px 12px;font-size:10px;" onclick="exportKB()">EXPORT JSON</button>
+            <label style="margin:0;cursor:pointer;">
+              <span class="sec-btn" style="padding:4px 12px;font-size:10px;display:inline-block;">IMPORT JSON</span>
+              <input type="file" accept=".json" style="display:none" onchange="importKB(this)">
+            </label>
+          </div>
+        </div>
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" placeholder="Search components..." oninput="filterComponents()">
+        </div>
+        <div class="comp-grid" id="compList"><div class="empty">No components yet</div></div>
+      </div>
     </div>
 
-    <!-- Change Password -->
-    <div class="section">
-      <div class="section-title">Change Admin Password</div>
-      <label>NEW PASSWORD <span style="color:#2a4a5a;font-weight:300;">(min 6 characters)</span></label>
-      <div class="pass-row">
-        <input type="password" id="newPass" placeholder="Enter new password">
-        <input type="password" id="confirmPass" placeholder="Confirm new password">
-        <button class="pass-btn" onclick="changePassword()">UPDATE</button>
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="section">
+        <div class="section-title">AI Settings</div>
+        <label>SYSTEM PROMPT</label>
+        <textarea id="aiPrompt" rows="5" placeholder="Custom instructions for VIS-7..."></textarea>
+        <label>MAX RESPONSE LENGTH</label>
+        <div class="range-wrap">
+          <input type="range" id="maxWords" min="50" max="300" step="25" value="150" oninput="document.getElementById('maxWordsVal').textContent=this.value">
+          <span class="range-val" id="maxWordsVal">150</span>
+          <span style="font-size:10px;color:#3a6a7a;">words</span>
+        </div>
+        <label>DEFAULT RESPONSE LANGUAGE</label>
+        <select id="aiLang">
+          <option value="same">Match user's language</option>
+          <option value="en">Always English</option>
+          <option value="ar">Always Arabic</option>
+        </select>
+        <div class="btn-row">
+          <button class="save-btn" onclick="saveAISettings()">SAVE AI SETTINGS</button>
+          <button class="sec-btn" onclick="loadAISettings()">RESET</button>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-title">Change Admin Password</div>
+        <label>NEW PASSWORD <span style="color:#2a4a5a;font-weight:300;">(min 6 characters)</span></label>
+        <div class="pass-row">
+          <input type="password" id="newPass" placeholder="New password">
+          <input type="password" id="confirmPass" placeholder="Confirm password">
+          <button class="pass-btn" onclick="changePassword()">UPDATE</button>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
 <script>
 let password='';
+let allComponents={};
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
 function login(){
   const pw=document.getElementById('pwInput').value;
   fetch('/admin/knowledge',{headers:{'x-admin-password':pw}}).then(r=>{
     if(r.status===401){document.getElementById('loginErr').textContent='Incorrect password.';}
-    else{password=pw;document.getElementById('loginScreen').style.display='none';document.getElementById('adminApp').style.display='block';loadComponents();}
-  });
+    else{
+      password=pw;
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('adminApp').style.display='block';
+      loadAll();
+    }
+  }).catch(()=>document.getElementById('loginErr').textContent='Connection error.');
 }
 function logout(){
   password='';
@@ -143,21 +280,132 @@ function logout(){
   document.getElementById('pwInput').value='';
   document.getElementById('loginErr').textContent='';
 }
-function showToast(msg,err=false){
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  event.target.classList.add('active');
+  if(name==='dashboard') loadStats();
+  if(name==='components') loadComponents();
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+function showToast(msg,type='ok'){
   const t=document.getElementById('toast');
-  t.textContent=msg;t.className='toast'+(err?' err':'')+' show';
+  t.textContent=msg;t.className='toast '+type+' show';
   setTimeout(()=>t.classList.remove('show'),2500);
 }
+
+// ── Load all ──────────────────────────────────────────────────────────────────
+function loadAll(){loadStats();loadComponents();loadAISettings();}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadStats(){
+  try{
+    const [sr,kr]=await Promise.all([
+      fetch('/admin/stats',{headers:{'x-admin-password':password}}),
+      fetch('/admin/knowledge',{headers:{'x-admin-password':password}})
+    ]);
+    const stats=await sr.json();
+    const kb=await kr.json();
+    const compKeys=Object.keys(kb);
+    const activeKeys=Object.keys(stats.components||{});
+
+    document.getElementById('statTotal').textContent=stats.totalQuestions||0;
+    document.getElementById('statComponents').textContent=compKeys.length;
+    document.getElementById('statActive').textContent=activeKeys.length;
+    document.getElementById('statLast').textContent=stats.lastActivity
+      ? new Date(stats.lastActivity).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+      : '—';
+
+    // Top components
+    const topList=document.getElementById('topComponents');
+    const sorted=Object.entries(stats.components||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const max=sorted[0]?.[1]||1;
+    if(sorted.length===0){topList.innerHTML='<div class="empty">No data yet</div>';}
+    else{
+      topList.innerHTML=sorted.map(([name,count])=>`
+        <div class="top-item">
+          <div class="top-item-name">${name}</div>
+          <div class="top-item-bar-wrap"><div class="top-item-bar" style="width:${Math.round(count/max*100)}%"></div></div>
+          <div class="top-item-count">${count}</div>
+        </div>`).join('');
+    }
+
+    // Recent questions
+    const qList=document.getElementById('recentQuestions');
+    const qs=stats.questions||[];
+    if(qs.length===0){qList.innerHTML='<div class="empty">No questions yet</div>';}
+    else{
+      qList.innerHTML=qs.slice(0,50).map(q=>`
+        <div class="q-item">
+          <div class="q-item-comp">${q.component}</div>
+          <div class="q-item-text">${q.question}</div>
+          <div class="q-item-time">${new Date(q.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+        </div>`).join('');
+    }
+  }catch(e){console.error(e);}
+}
+
+async function clearStats(){
+  if(!confirm('Clear all statistics?'))return;
+  await fetch('/admin/stats',{method:'DELETE',headers:{'x-admin-password':password}});
+  showToast('✓ Statistics cleared');
+  loadStats();
+}
+
+// ── Components ────────────────────────────────────────────────────────────────
+async function loadComponents(){
+  const r=await fetch('/admin/knowledge',{headers:{'x-admin-password':password}});
+  allComponents=await r.json();
+  renderComponents(allComponents);
+}
+function renderComponents(data){
+  const list=document.getElementById('compList');
+  const keys=Object.keys(data);
+  if(keys.length===0){list.innerHTML='<div class="empty">No components yet</div>';return;}
+  list.innerHTML='';
+  keys.forEach(k=>{
+    const comp=data[k];
+    const cl=(comp.checklist||[]).length;
+    const hz=(comp.hazards||[]).length;
+    const bt=(comp.buttons||[]).length;
+    const d=document.createElement('div');d.className='comp-card';
+    d.innerHTML=`<div>
+      <div class="comp-card-name">${k}</div>
+      <div class="comp-card-meta">${bt} button${bt!==1?'s':''} · ${cl} checklist · ${hz} hazards</div>
+    </div>
+    <div class="comp-card-actions">
+      <button class="copy-btn" onclick="copyComp('${k.replace(/'/g,"\\'")}')">COPY</button>
+      <button class="edit-btn" onclick="editComp('${k.replace(/'/g,"\\'")}')">EDIT</button>
+      <button class="del-btn" onclick="delComp('${k.replace(/'/g,"\\'")}')">DELETE</button>
+    </div>`;
+    list.appendChild(d);
+  });
+}
+function filterComponents(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const filtered=Object.fromEntries(Object.entries(allComponents).filter(([k])=>k.toLowerCase().includes(q)));
+  renderComponents(filtered);
+}
+
+// ── Form helpers ──────────────────────────────────────────────────────────────
 function addListItem(containerId,placeholder,value=''){
   const c=document.getElementById(containerId);
   const d=document.createElement('div');d.className='list-item';
-  d.innerHTML=`<input type="text" placeholder="${placeholder}" value="${value.replace(/"/g,'&quot;')}"><button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
+  d.innerHTML=`<input type="text" placeholder="${placeholder}" value="${value.replace(/"/g,'&quot;')}">
+    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
   c.appendChild(d);
 }
 function addButtonItem(label='',question=''){
   const c=document.getElementById('buttonItems');
   const d=document.createElement('div');d.className='list-item';
-  d.innerHTML=`<input type="text" placeholder="Button label" value="${label.replace(/"/g,'&quot;')}" style="flex:0.8"><span class="sep-label">→</span><input type="text" placeholder="Question to send" value="${question.replace(/"/g,'&quot;')}" style="flex:1.2"><button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
+  d.innerHTML=`<input type="text" placeholder="Button label" value="${label.replace(/"/g,'&quot;')}" style="flex:0.8">
+    <span class="sep-label">→</span>
+    <input type="text" placeholder="Question to send" value="${question.replace(/"/g,'&quot;')}" style="flex:1.2">
+    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
   c.appendChild(d);
 }
 function getListItems(id){
@@ -169,7 +417,7 @@ function getButtonItems(){
     const inputs=row.querySelectorAll('input');
     const label=inputs[0]?.value.trim();
     const question=inputs[1]?.value.trim();
-    if(label&&question) items.push({label,question});
+    if(label&&question)items.push({label,question});
   });
   return items;
 }
@@ -181,41 +429,25 @@ function clearForm(){
   document.getElementById('buttonItems').innerHTML='';
   document.getElementById('formTitle').textContent='Add Component';
 }
+
+// ── CRUD ──────────────────────────────────────────────────────────────────────
 async function save(){
   const name=document.getElementById('compName').value.trim();
   const info=document.getElementById('compInfo').value.trim();
   const checklist=getListItems('checklistItems');
   const hazards=getListItems('hazardItems');
   const buttons=getButtonItems();
-  if(!name){showToast('Component name required',true);return;}
-  await fetch('/admin/knowledge',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':password},body:JSON.stringify({name,info,checklist,hazards,buttons})});
-  showToast('✓ Saved successfully');
-  clearForm();loadComponents();
-}
-async function loadComponents(){
-  const r=await fetch('/admin/knowledge',{headers:{'x-admin-password':password}});
-  const data=await r.json();
-  const list=document.getElementById('compList');
-  const keys=Object.keys(data);
-  if(keys.length===0){list.innerHTML='<div class="empty">No components yet</div>';return;}
-  list.innerHTML='';
-  keys.forEach(k=>{
-    const comp=data[k];
-    const cl=(comp.checklist||[]).length;
-    const hz=(comp.hazards||[]).length;
-    const bt=(comp.buttons||[]).length;
-    const d=document.createElement('div');d.className='comp-card';
-    d.innerHTML=`<div><div class="comp-card-name">${k}</div><div class="comp-card-meta">${cl} checklist · ${hz} hazards · ${bt} button${bt!==1?'s':''}</div></div>
-    <div class="comp-card-actions">
-      <button class="edit-btn" onclick="editComp('${k.replace(/'/g,"\\'")}')">EDIT</button>
-      <button class="del-btn" onclick="delComp('${k.replace(/'/g,"\\'")}')">DELETE</button>
-    </div>`;
-    list.appendChild(d);
+  if(!name){showToast('Component name required','err');return;}
+  const r=await fetch('/admin/knowledge',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-admin-password':password},
+    body:JSON.stringify({name,info,checklist,hazards,buttons})
   });
+  if(r.ok){showToast('✓ Saved successfully');clearForm();loadComponents();}
+  else{const d=await r.json();showToast(d.error||'Save failed','err');}
 }
 async function editComp(name){
-  const r=await fetch('/admin/knowledge',{headers:{'x-admin-password':password}});
-  const data=await r.json();const comp=data[name]||{};
+  const comp=allComponents[name]||{};
   document.getElementById('compName').value=name;
   document.getElementById('compInfo').value=comp.info||'';
   document.getElementById('checklistItems').innerHTML='';
@@ -225,25 +457,87 @@ async function editComp(name){
   (comp.hazards||[]).forEach(v=>addListItem('hazardItems','Safety hazard...',v));
   (comp.buttons||[]).forEach(b=>addButtonItem(b.label,b.question));
   document.getElementById('formTitle').textContent='Editing: '+name;
+  showPage('components');
+  document.querySelector('[onclick="showPage(\'components\')"]').click();
   window.scrollTo(0,0);
+}
+async function copyComp(name){
+  const comp=allComponents[name]||{};
+  const newName=name+' (Copy)';
+  document.getElementById('compName').value=newName;
+  document.getElementById('compInfo').value=comp.info||'';
+  document.getElementById('checklistItems').innerHTML='';
+  document.getElementById('hazardItems').innerHTML='';
+  document.getElementById('buttonItems').innerHTML='';
+  (comp.checklist||[]).forEach(v=>addListItem('checklistItems','Inspection item...',v));
+  (comp.hazards||[]).forEach(v=>addListItem('hazardItems','Safety hazard...',v));
+  (comp.buttons||[]).forEach(b=>addButtonItem(b.label,b.question));
+  document.getElementById('formTitle').textContent='Copy of: '+name;
+  window.scrollTo(0,0);
+  showToast('✓ Copied — edit and save');
 }
 async function delComp(name){
   if(!confirm('Delete "'+name+'"?'))return;
-  await fetch('/admin/knowledge/'+encodeURIComponent(name),{method:'DELETE',headers:{'x-admin-password':password}});
-  showToast('Deleted');loadComponents();
+  const r=await fetch('/admin/knowledge/'+encodeURIComponent(name),{method:'DELETE',headers:{'x-admin-password':password}});
+  if(r.ok){showToast('Deleted');loadComponents();}
+  else showToast('Delete failed','err');
 }
+
+// ── Export / Import ───────────────────────────────────────────────────────────
+async function exportKB(){
+  const r=await fetch('/admin/export',{headers:{'x-admin-password':password}});
+  const blob=await r.blob();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='simusphere-kb.json';
+  a.click();
+  showToast('✓ Exported');
+}
+async function importKB(input){
+  const file=input.files[0];if(!file)return;
+  try{
+    const text=await file.text();
+    const data=JSON.parse(text);
+    if(!confirm('This will overwrite current KB with '+Object.keys(data).length+' components. Continue?')){input.value='';return;}
+    const r=await fetch('/admin/import',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':password},body:JSON.stringify(data)});
+    const res=await r.json();
+    if(r.ok){showToast('✓ Imported '+res.count+' components');loadComponents();}
+    else showToast(res.error||'Import failed','err');
+  }catch(e){showToast('Invalid JSON file','err');}
+  input.value='';
+}
+
+// ── AI Settings ───────────────────────────────────────────────────────────────
+function loadAISettings(){
+  const s=JSON.parse(localStorage.getItem('aiSettings')||'{}');
+  document.getElementById('aiPrompt').value=s.prompt||'';
+  document.getElementById('maxWords').value=s.maxWords||150;
+  document.getElementById('maxWordsVal').textContent=s.maxWords||150;
+  document.getElementById('aiLang').value=s.lang||'same';
+}
+function saveAISettings(){
+  const s={
+    prompt:document.getElementById('aiPrompt').value.trim(),
+    maxWords:document.getElementById('maxWords').value,
+    lang:document.getElementById('aiLang').value
+  };
+  localStorage.setItem('aiSettings',JSON.stringify(s));
+  showToast('✓ AI settings saved');
+}
+
+// ── Password ──────────────────────────────────────────────────────────────────
 async function changePassword(){
   const np=document.getElementById('newPass').value;
   const cp=document.getElementById('confirmPass').value;
-  if(np.length<6){showToast('Password must be at least 6 characters',true);return;}
-  if(np!==cp){showToast('Passwords do not match',true);return;}
+  if(np.length<6){showToast('Min 6 characters','err');return;}
+  if(np!==cp){showToast('Passwords do not match','err');return;}
   const r=await fetch('/admin/change-password',{method:'POST',headers:{'Content-Type':'application/json','x-admin-password':password},body:JSON.stringify({newPassword:np})});
   if(r.ok){
     password=np;
     document.getElementById('newPass').value='';
     document.getElementById('confirmPass').value='';
     showToast('✓ Password updated');
-  }else{showToast('Failed to update password',true);}
+  }else showToast('Failed','err');
 }
 </script>
 </body>
