@@ -155,21 +155,33 @@ loadQuickButtons();
 
 // TTS
 let currentSpeakBtn=null;
+function getMaleVoice(){
+  const voices=window.speechSynthesis.getVoices();
+  return voices.find(v=>v.name.includes('David'))||
+         voices.find(v=>v.name.includes('Mark'))||
+         voices.find(v=>v.name.includes('Alex'))||
+         voices.find(v=>v.lang==='en-US'&&v.name.toLowerCase().includes('male'))||
+         voices.find(v=>v.lang==='en-US')||
+         voices[0]||null;
+}
+function speakAI(text,btn){
+  if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();}
+  if(currentSpeakBtn){currentSpeakBtn.classList.remove('speaking');currentSpeakBtn=null;}
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang='en-US';utt.rate=0.95;
+  const voice=getMaleVoice();if(voice)utt.voice=voice;
+  utt.onend=()=>{if(btn){btn.classList.remove('speaking');}currentSpeakBtn=null;};
+  utt.onerror=()=>{if(btn){btn.classList.remove('speaking');}currentSpeakBtn=null;};
+  if(btn){currentSpeakBtn=btn;btn.classList.add('speaking');}
+  window.speechSynthesis.speak(utt);
+}
 function speakText(btn){
   const text=btn.getAttribute('data-text');
-  if(window.speechSynthesis.speaking){
+  if(window.speechSynthesis.speaking&&currentSpeakBtn===btn){
     window.speechSynthesis.cancel();
-    if(currentSpeakBtn){currentSpeakBtn.classList.remove('speaking');}
-    if(currentSpeakBtn===btn){currentSpeakBtn=null;return;}
+    btn.classList.remove('speaking');currentSpeakBtn=null;return;
   }
-  const utt=new SpeechSynthesisUtterance(text);
-  utt.lang='en-US';
-  utt.rate=0.95;
-  utt.onend=()=>{btn.classList.remove('speaking');currentSpeakBtn=null;};
-  utt.onerror=()=>{btn.classList.remove('speaking');currentSpeakBtn=null;};
-  currentSpeakBtn=btn;
-  btn.classList.add('speaking');
-  window.speechSynthesis.speak(utt);
+  speakAI(text,btn);
 }
 
 // Voice input
