@@ -4,172 +4,217 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SimuSphere Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#060d16;color:#c8dde8;font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+:root{
+  --bg:#060f18;--bg2:#0b1a27;--bg3:#0f2030;--bg4:#132638;
+  --c1:#00d4ff;--c2:#00ff88;--c3:#7b61ff;--c4:#ff6b6b;
+  --t1:#e2eef7;--t2:#7a9ab5;--t3:#3a5a72;
+  --b1:rgba(0,212,255,0.07);--b2:rgba(0,212,255,0.18);
+}
+body{background:var(--bg);color:var(--t1);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
 
-/* ── Login ── */
-#loginScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:#060d16;}
-.login-card{background:#0c1a28;border:1px solid #ffffff0f;border-radius:14px;padding:44px 40px;width:360px;text-align:center;}
-.login-logo{font-size:11px;letter-spacing:4px;color:#3a6a7a;margin-bottom:20px;}
-.login-title{font-size:22px;font-weight:700;letter-spacing:3px;color:#4db8ff;margin-bottom:4px;}
-.login-sub{font-size:10px;color:#2a5a6a;letter-spacing:2px;margin-bottom:32px;}
-.login-card input{width:100%;padding:13px 16px;background:#08121e;border:1px solid #ffffff0d;border-radius:8px;color:#c8dde8;font-size:13px;outline:none;margin-bottom:12px;transition:border-color .2s;}
-.login-card input:focus{border-color:#4db8ff44;}
-.login-card .sign-in-btn{width:100%;padding:13px;background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:8px;color:#fff;font-size:12px;letter-spacing:2px;cursor:pointer;transition:opacity .2s;}
-.login-card .sign-in-btn:hover{opacity:.85;}
-.login-err{color:#e74c3c;font-size:11px;margin-top:12px;min-height:16px;}
+/* Login */
+#loginScreen{display:flex;align-items:center;justify-content:center;height:100vh;background:var(--bg);}
+.login-card{background:var(--bg2);border:1px solid var(--b2);border-radius:14px;padding:44px 40px;width:360px;text-align:center;}
+.login-orb{width:56px;height:56px;border-radius:50%;border:2px solid var(--c1);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;animation:orbPulse 3s ease-in-out infinite;position:relative;}
+.login-orb::before{content:'';position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--c1);opacity:.2;animation:orbPulse 3s ease-in-out infinite .4s;}
+.login-orb-dot{width:14px;height:14px;border-radius:50%;background:var(--c1);animation:dotBreathe 2s ease-in-out infinite;}
+@keyframes orbPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,212,255,.3);}50%{opacity:.6;box-shadow:0 0 0 8px rgba(0,212,255,0);}}
+@keyframes dotBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
+.login-title{font-size:20px;font-weight:600;letter-spacing:2px;color:var(--t1);margin-bottom:4px;}
+.login-sub{font-size:10px;color:var(--t3);letter-spacing:2px;margin-bottom:32px;}
+.login-card input{width:100%;padding:12px 16px;background:var(--bg4);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-size:13px;font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.login-card input:focus{border-color:rgba(0,212,255,.4);}
+.login-btn{width:100%;padding:12px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:8px;color:var(--c1);font-size:12px;letter-spacing:2px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.login-btn:hover{background:rgba(0,212,255,.18);border-color:var(--c1);}
+.login-err{color:var(--c4);font-size:11px;margin-top:12px;min-height:16px;}
 
-/* ── App Shell ── */
-#adminApp{display:none;flex:1;flex-direction:column;}
-.topbar{background:#0c1a28;border-bottom:1px solid #ffffff08;padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
-.topbar-brand{display:flex;align-items:center;gap:10px;}
-.topbar-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#4db8ff,#00c853);}
-.topbar-name{font-size:13px;font-weight:700;letter-spacing:2px;color:#c8dde8;}
-.topbar-badge{font-size:9px;color:#2a6a4a;background:#00c85310;border:1px solid #00c85330;padding:2px 8px;border-radius:10px;letter-spacing:1px;}
-.topbar-right{display:flex;align-items:center;gap:8px;}
-.sign-out-btn{background:transparent;border:1px solid #ffffff0d;color:#4a6a7a;padding:6px 14px;border-radius:6px;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
-.sign-out-btn:hover{border-color:#e74c3c44;color:#e74c3c;}
+/* App */
+#app{display:none;flex:1;flex-direction:column;}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--b1);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{display:flex;align-items:center;gap:8px;}
+.tb-orb{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--c1);display:flex;align-items:center;justify-content:center;animation:orbPulse 3s ease-in-out infinite;}
+.tb-orb-dot{width:8px;height:8px;border-radius:50%;background:var(--c1);animation:dotBreathe 2s ease-in-out infinite;}
+.tb-name{font-size:13px;font-weight:600;letter-spacing:.5px;}
+.tb-div{width:1px;height:20px;background:var(--b2);margin:0 4px;}
+.tb-page{font-size:13px;color:var(--t2);}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.live-pill{display:flex;align-items:center;gap:6px;padding:5px 10px;border-radius:6px;background:rgba(0,255,136,.04);border:1px solid rgba(0,255,136,.12);font-size:10px;color:var(--c2);}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--c2);animation:liveBlink 1.5s ease-in-out infinite;}
+@keyframes liveBlink{0%,100%{opacity:1;}50%{opacity:.2;}}
+.sign-out{background:transparent;border:1px solid var(--b1);color:var(--t3);padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.sign-out:hover{border-color:rgba(255,107,107,.4);color:var(--c4);}
 
-/* ── Nav ── */
-.nav-bar{background:#0a1624;border-bottom:1px solid #ffffff06;padding:0 28px;display:flex;gap:2px;}
-.nav-item{padding:12px 18px;font-size:11px;letter-spacing:1.5px;color:#3a6a7a;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-left:none;border-right:none;border-top:none;}
-.nav-item:hover{color:#8ab0c8;}
-.nav-item.active{color:#4db8ff;border-bottom-color:#4db8ff;}
+/* Shell */
+.shell{display:flex;flex:1;overflow:hidden;}
 
-/* ── Content ── */
-.content{flex:1;padding:24px 28px;max-width:1000px;width:100%;margin:0 auto;}
-.page{display:none;}
-.page.active{display:block;}
+/* Sidebar */
+.sb{width:200px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--b1);display:flex;flex-direction:column;padding:12px 8px;}
+.sb-sec{font-size:9px;letter-spacing:2px;color:var(--t3);padding:10px 8px 4px;text-transform:uppercase;}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;cursor:pointer;color:var(--t2);font-size:12px;border:1px solid transparent;margin-bottom:1px;transition:all .2s;position:relative;overflow:hidden;background:none;}
+.ni::after{content:'';position:absolute;left:0;top:0;width:0;height:100%;background:var(--c1);opacity:.05;transition:width .3s ease;}
+.ni:hover::after{width:100%;}
+.ni:hover{color:var(--t1);}
+.ni.on{background:rgba(0,212,255,.07);color:var(--c1);border-color:rgba(0,212,255,.18);}
+.ni.on::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:2px;height:18px;background:var(--c1);border-radius:0 2px 2px 0;}
+.ni i{font-size:15px;flex-shrink:0;}
+.ni-badge{margin-left:auto;font-size:9px;background:rgba(0,255,136,.1);color:var(--c2);padding:1px 6px;border-radius:3px;border:1px solid rgba(0,255,136,.15);font-family:'JetBrains Mono',monospace;}
+.sb-spacer{flex:1;}
+.sb-status{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:7px;background:rgba(0,255,136,.03);border:1px solid rgba(0,255,136,.08);}
+.sb-status-dot{width:5px;height:5px;border-radius:50%;background:var(--c2);animation:liveBlink 1.5s ease-in-out infinite;}
+.sb-status-txt{font-size:10px;color:var(--c2);}
+.sb-status-url{font-size:9px;color:var(--t3);margin-left:auto;font-family:'JetBrains Mono',monospace;}
 
-/* ── Section ── */
-.card{background:#0c1a28;border:1px solid #ffffff08;border-radius:10px;padding:22px;margin-bottom:16px;}
-.card-title{font-size:10px;letter-spacing:2px;color:#4db8ff;font-weight:600;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+/* Content */
+.main{flex:1;overflow-y:auto;padding:20px 24px;scrollbar-width:thin;scrollbar-color:var(--b2) transparent;}
+.page{animation:pageIn .22s ease forwards;}
+@keyframes pageIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:translateY(0);}}
 
-/* ── Stats Grid ── */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px;}
-.stat-box{background:#0c1a28;border:1px solid #ffffff08;border-radius:10px;padding:20px;text-align:center;}
-.stat-num{font-size:36px;font-weight:700;line-height:1;}
-.stat-lbl{font-size:9px;letter-spacing:1.5px;color:#2a5a6a;margin-top:6px;}
-.stat-box.blue .stat-num{color:#4db8ff;}
-.stat-box.green .stat-num{color:#00c853;}
-.stat-box.amber .stat-num{color:#f5a623;}
-.stat-box.purple .stat-num{color:#a855f7;}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.sc{background:var(--bg3);border:1px solid var(--b1);border-radius:10px;padding:16px 14px;position:relative;overflow:hidden;transition:border-color .2s;cursor:default;}
+.sc:hover{border-color:var(--b2);}
+.sc-shimmer{position:absolute;inset:0;opacity:0;transition:opacity .1s;}
+.sc:hover .sc-shimmer{animation:shimmer .5s ease;}
+@keyframes shimmer{0%{opacity:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 50%,transparent 100%);background-size:200% 100%;background-position:-100% 0;}100%{opacity:1;background-position:100% 0;}}
+.sc-n{font-size:28px;font-weight:600;line-height:1.1;font-family:'JetBrains Mono',monospace;}
+.sc-l{font-size:9px;color:var(--t3);letter-spacing:.5px;margin-top:6px;text-transform:uppercase;}
+.sc-icon{position:absolute;right:12px;top:12px;font-size:22px;opacity:.1;}
+.sc.b1 .sc-n,.sc.b1 .sc-icon{color:var(--c1);}
+.sc.b2 .sc-n,.sc.b2 .sc-icon{color:var(--c2);}
+.sc.b3 .sc-n,.sc.b3 .sc-icon{color:var(--c3);}
+.sc.b4 .sc-n,.sc.b4 .sc-icon{color:#ffb347;}
 
-/* ── Bar Chart ── */
-.bar-list{display:flex;flex-direction:column;gap:8px;}
-.bar-row{display:flex;align-items:center;gap:10px;}
-.bar-name{font-size:11px;color:#8ab0c8;width:160px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.bar-track{flex:1;height:5px;background:#ffffff08;border-radius:3px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#0055aa,#00c853);transition:width .6s ease;}
-.bar-count{font-size:10px;color:#3a6a7a;min-width:28px;text-align:right;}
+/* Cards */
+.g2{display:grid;grid-template-columns:1.3fr 1fr;gap:12px;margin-bottom:12px;}
+.card{background:var(--bg3);border:1px solid var(--b1);border-radius:10px;padding:16px;transition:border-color .2s;}
+.card:hover{border-color:var(--b2);}
+.card-hd{font-size:10px;color:var(--t2);letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;text-transform:uppercase;}
+.card-hd i{font-size:14px;margin-right:5px;vertical-align:-2px;color:var(--t3);}
 
-/* ── Q List ── */
-.q-scroll{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
-.q-row{padding:9px 12px;background:#08121e;border:1px solid #ffffff06;border-radius:7px;}
-.q-comp{font-size:9px;color:#4db8ff;letter-spacing:1px;margin-bottom:2px;}
-.q-text{font-size:11px;color:#7a9ab0;line-height:1.5;}
-.q-time{font-size:9px;color:#1a3a4a;margin-top:3px;}
+/* Bars */
+.br{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.br-nm{font-size:11px;color:var(--t2);width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.br-tr{flex:1;height:3px;background:rgba(255,255,255,.04);border-radius:2px;overflow:hidden;}
+.br-fl{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+.br-fl.c{background:var(--c1);}
+.br-fl.g{background:var(--c2);}
+.br-ct{font-size:10px;color:var(--t3);min-width:22px;text-align:right;font-family:'JetBrains Mono',monospace;}
 
-/* ── Form ── */
-.field-label{display:block;font-size:9px;letter-spacing:1.5px;color:#3a6a7a;margin-bottom:6px;margin-top:16px;}
-.field-label:first-child{margin-top:0;}
-.field-label span{color:#1a3a4a;font-weight:300;}
-input[type=text],input[type=password],textarea,select{width:100%;padding:10px 14px;background:#08121e;border:1px solid #ffffff08;border-radius:7px;color:#c8dde8;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s;}
-input[type=text]:focus,input[type=password]:focus,textarea:focus,select:focus{border-color:#4db8ff33;}
-textarea{resize:vertical;min-height:90px;line-height:1.7;}
-select option{background:#0c1a28;}
-.char-count{font-size:9px;color:#1a3a4a;text-align:right;margin-top:3px;}
+/* Q items */
+.qi{padding:8px 10px;background:var(--bg4);border:1px solid var(--b1);border-radius:7px;margin-bottom:6px;cursor:default;transition:all .2s;}
+.qi:hover{border-color:var(--b2);background:var(--bg3);}
+.qi-comp{font-size:9px;color:var(--c1);letter-spacing:1px;margin-bottom:2px;}
+.qi-text{font-size:11px;color:var(--t2);}
+.qi-time{font-size:9px;color:var(--t3);margin-top:2px;font-family:'JetBrains Mono',monospace;}
 
-/* ── Toggle ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#08121e;border:1px solid #ffffff08;border-radius:7px;margin-top:16px;}
-.toggle-info{font-size:11px;color:#8ab0c8;}
-.toggle-sub{font-size:9px;color:#3a6a7a;margin-top:2px;}
-.toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
-.toggle input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:#ffffff0d;border-radius:11px;cursor:pointer;transition:.3s;}
-.toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;bottom:3px;background:#4a6a7a;border-radius:50%;transition:.3s;}
-.toggle input:checked+.toggle-slider{background:#00c85330;border:1px solid #00c85366;}
-.toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:#00c853;}
+/* Comp rows */
+.cr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg4);border:1px solid var(--b1);border-radius:8px;margin-bottom:6px;transition:all .2s;cursor:default;}
+.cr:hover{border-color:var(--b2);background:var(--bg3);}
+.cr-name{font-size:13px;font-weight:500;color:var(--t1);display:flex;align-items:center;gap:8px;}
+.cr-meta{font-size:10px;color:var(--t3);margin-top:3px;}
+.pill{font-size:9px;padding:2px 7px;border-radius:3px;}
+.pill.kb{background:rgba(255,179,71,.1);color:#ffb347;border:1px solid rgba(255,179,71,.2);}
+.pill.gen{background:rgba(0,212,255,.07);color:var(--c1);border:1px solid rgba(0,212,255,.15);}
+.cr-acts{display:flex;gap:5px;}
+.act{font-size:10px;padding:4px 10px;border-radius:5px;border:1px solid var(--b1);background:transparent;color:var(--t3);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;}
+.act.e:hover{border-color:rgba(0,212,255,.3);color:var(--c1);}
+.act.cp:hover{border-color:rgba(123,97,255,.3);color:var(--c3);}
+.act.d:hover{border-color:rgba(255,107,107,.3);color:var(--c4);}
 
-/* ── Dynamic Lists ── */
-.dyn-list{background:#08121e;border:1px solid #ffffff08;border-radius:7px;padding:10px;}
-.dyn-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+/* Form */
+.form-card{background:var(--bg3);border:1px solid var(--b1);border-radius:10px;padding:20px;margin-bottom:12px;}
+.form-title{font-size:11px;color:var(--t2);letter-spacing:1px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.form-title i{font-size:16px;color:var(--c1);}
+.fl{display:block;font-size:9px;letter-spacing:1.5px;color:var(--t3);margin-bottom:6px;margin-top:16px;text-transform:uppercase;}
+.fl:first-of-type{margin-top:0;}
+input[type=text],input[type=password],textarea,select{width:100%;padding:10px 14px;background:var(--bg4);border:1px solid var(--b1);border-radius:7px;color:var(--t1);font-size:12px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+input:focus,textarea:focus,select:focus{border-color:rgba(0,212,255,.35);}
+textarea{resize:vertical;min-height:100px;line-height:1.7;}
+select option{background:var(--bg3);}
+.char-count{font-size:9px;color:var(--t3);text-align:right;margin-top:3px;font-family:'JetBrains Mono',monospace;}
+
+/* Dynamic list */
+.dyn-list{background:var(--bg4);border:1px solid var(--b1);border-radius:7px;padding:10px;}
+.dyn-item{display:flex;align-items:center;gap:8px;margin-bottom:8px;animation:fadeSlide .2s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-4px);}to{opacity:1;transform:translateX(0);}}
 .dyn-item:last-child{margin-bottom:0;}
 .dyn-item input{flex:1;margin:0;}
-.dyn-sep{font-size:10px;color:#1a4a2a;flex-shrink:0;}
-.rm-btn{width:26px;height:26px;background:transparent;border:1px solid #ffffff08;border-radius:5px;color:#3a5a6a;cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.rm-btn:hover{border-color:#e74c3c55;color:#e74c3c;}
-.add-row-btn{width:100%;margin-top:8px;padding:7px;background:transparent;border:1px dashed #ffffff0d;border-radius:6px;color:#2a5a6a;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
-.add-row-btn:hover{border-color:#4db8ff33;color:#4db8ff;}
+.dyn-sep{font-size:14px;color:var(--t3);flex-shrink:0;}
+.rm-btn{width:26px;height:26px;background:transparent;border:1px solid var(--b1);border-radius:5px;color:var(--t3);cursor:pointer;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.rm-btn:hover{border-color:rgba(255,107,107,.3);color:var(--c4);}
+.add-btn{width:100%;margin-top:8px;padding:7px;background:transparent;border:1px dashed var(--b1);border-radius:6px;color:var(--t3);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.5px;}
+.add-btn:hover{border-color:rgba(0,212,255,.3);color:var(--c1);}
 
-/* ── PDF Upload ── */
-.pdf-drop{border:2px dashed #ffffff0d;border-radius:8px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
-.pdf-drop:hover,.pdf-drop.drag{border-color:#4db8ff44;background:#4db8ff05;}
-.pdf-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.pdf-icon{font-size:28px;margin-bottom:8px;}
-.pdf-label{font-size:12px;color:#4a7a9a;}
-.pdf-sub{font-size:10px;color:#2a4a5a;margin-top:4px;}
-.pdf-progress{display:none;margin-top:12px;}
-.pdf-progress.show{display:block;}
-.pdf-bar-wrap{height:3px;background:#ffffff08;border-radius:2px;overflow:hidden;margin-top:6px;}
-.pdf-bar-fill{height:100%;background:linear-gradient(90deg,#4db8ff,#00c853);width:0%;transition:width .3s;}
-.pdf-status{font-size:10px;color:#4a7a9a;margin-top:4px;letter-spacing:1px;}
+/* Toggle */
+.tog-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--bg4);border:1px solid var(--b1);border-radius:8px;margin-top:16px;transition:border-color .2s;}
+.tog-row:hover{border-color:var(--b2);}
+.tog-info .tog-l{font-size:12px;color:var(--t1);}
+.tog-info .tog-s{font-size:10px;color:var(--t3);margin-top:2px;}
+.tog{position:relative;width:38px;height:21px;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;}
+.tog-sl{position:absolute;inset:0;background:var(--bg3);border:1px solid var(--b2);border-radius:11px;cursor:pointer;transition:.25s;}
+.tog-sl::before{content:'';position:absolute;width:15px;height:15px;left:2px;bottom:2px;background:var(--t3);border-radius:50%;transition:.28s cubic-bezier(.34,1.56,.64,1);}
+.tog input:checked+.tog-sl{background:rgba(0,212,255,.15);border-color:var(--c1);}
+.tog input:checked+.tog-sl::before{transform:translateX(17px);background:var(--c1);}
 
-/* ── Comp List ── */
-.search-bar{position:relative;margin-bottom:12px;}
-.search-bar input{padding-left:34px;}
-.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;color:#2a4a5a;pointer-events:none;}
-.comp-list{display:flex;flex-direction:column;gap:7px;}
-.comp-row{background:#08121e;border:1px solid #ffffff06;border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s;}
-.comp-row:hover{border-color:#ffffff0f;}
-.comp-row-name{font-size:13px;color:#c8dde8;font-weight:500;}
-.comp-row-meta{font-size:9px;color:#2a5a6a;margin-top:3px;letter-spacing:.5px;}
-.comp-row-badge{font-size:9px;padding:2px 7px;border-radius:4px;margin-left:6px;}
-.badge-restricted{background:#f5a62310;border:1px solid #f5a62330;color:#f5a623;}
-.badge-general{background:#4db8ff10;border:1px solid #4db8ff20;color:#4db8ff55;}
-.comp-actions{display:flex;gap:6px;flex-shrink:0;}
-.act-btn{background:transparent;border:1px solid #ffffff08;border-radius:5px;color:#3a6a7a;padding:4px 10px;font-size:10px;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
-.act-btn.edit:hover{border-color:#4db8ff44;color:#4db8ff;}
-.act-btn.copy:hover{border-color:#f5a62344;color:#f5a623;}
-.act-btn.del:hover{border-color:#e74c3c44;color:#e74c3c;}
+/* PDF */
+.pdf-zone{border:1.5px dashed var(--b2);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .25s;position:relative;margin-bottom:10px;}
+.pdf-zone:hover,.pdf-zone.drag{border-color:var(--c1);background:rgba(0,212,255,.03);}
+.pdf-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.pdf-zone:hover .pdf-icon{color:var(--c1);transform:scale(1.1);}
+.pdf-icon{font-size:32px;color:var(--t3);display:block;margin-bottom:10px;transition:all .25s;}
+.pdf-lbl{font-size:13px;color:var(--t2);margin-bottom:4px;}
+.pdf-sub{font-size:10px;color:var(--t3);}
+.pdf-prog{display:none;margin-top:12px;}
+.pdf-prog.show{display:block;}
+.pdf-bar-wrap{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-top:6px;}
+.pdf-bar{height:100%;background:var(--c1);width:0;transition:width .3s ease;border-radius:2px;}
+.pdf-status{font-size:10px;color:var(--t2);margin-top:5px;letter-spacing:.5px;}
+.pdf-ok{display:flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:6px;font-size:11px;color:var(--c2);animation:fadeSlide .3s ease;}
 
-/* ── Buttons Row ── */
-.btn-row{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;}
-.primary-btn{background:linear-gradient(135deg,#0055aa,#007733);border:none;border-radius:7px;color:#fff;padding:10px 24px;font-size:11px;letter-spacing:1.5px;cursor:pointer;transition:opacity .2s;}
-.primary-btn:hover{opacity:.85;}
-.ghost-btn{background:transparent;border:1px solid #ffffff0d;border-radius:7px;color:#4a7a9a;padding:10px 18px;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
-.ghost-btn:hover{border-color:#ffffff20;color:#8ab0c8;}
-.danger-btn{background:transparent;border:1px solid #e74c3c33;border-radius:7px;color:#e74c3c66;padding:10px 18px;font-size:11px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
-.danger-btn:hover{border-color:#e74c3c;color:#e74c3c;}
+/* Buttons row */
+.btn-row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;}
+.pri-btn{padding:10px 22px;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);border-radius:7px;color:var(--c1);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;letter-spacing:.5px;}
+.pri-btn:hover{background:rgba(0,212,255,.18);border-color:var(--c1);}
+.ghost-btn{padding:10px 18px;background:transparent;border:1px solid var(--b1);border-radius:7px;color:var(--t3);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.ghost-btn:hover{border-color:var(--b2);color:var(--t2);}
+.danger-btn{padding:10px 18px;background:transparent;border:1px solid rgba(255,107,107,.2);border-radius:7px;color:rgba(255,107,107,.6);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.danger-btn:hover{border-color:var(--c4);color:var(--c4);}
 
-/* ── Range ── */
+/* Search */
+.search-wrap{position:relative;margin-bottom:10px;}
+.search-wrap i{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--t3);pointer-events:none;}
+.search-wrap input{padding-left:34px;}
+
+/* AI settings */
 .range-row{display:flex;align-items:center;gap:12px;margin-top:6px;}
-.range-row input[type=range]{flex:1;accent-color:#4db8ff;height:4px;}
-.range-val{font-size:14px;font-weight:700;color:#4db8ff;min-width:40px;}
+.range-row input[type=range]{flex:1;accent-color:var(--c1);}
+.range-val{font-size:14px;font-weight:500;color:var(--c1);min-width:40px;font-family:'JetBrains Mono',monospace;}
 
-/* ── Pass row ── */
-.pass-fields{display:flex;gap:8px;flex-wrap:wrap;}
-.pass-fields input{flex:1;min-width:130px;}
+/* Security */
+.sec-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg4);border:1px solid var(--b1);border-radius:8px;margin-bottom:6px;}
+.sec-val{font-size:18px;font-weight:500;font-family:'JetBrains Mono',monospace;}
 
-/* ── Undo Toast ── */
-#undoBar{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0c1a28;border:1px solid #f5a62355;border-radius:8px;padding:10px 20px;font-size:12px;color:#f5a623;display:none;align-items:center;gap:14px;z-index:200;}
-#undoBar.show{display:flex;}
-#undoBar button{background:transparent;border:1px solid #f5a62344;border-radius:5px;color:#f5a623;padding:4px 10px;font-size:11px;cursor:pointer;}
+/* Undo */
+#undoBar{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid rgba(255,179,71,.3);border-radius:8px;padding:10px 16px;font-size:12px;color:#ffb347;display:none;align-items:center;gap:12px;z-index:200;white-space:nowrap;}
+#undoBar.show{display:flex;animation:fadeSlide .2s ease;}
+#undoBar button{background:transparent;border:1px solid rgba(255,179,71,.3);border-radius:5px;color:#ffb347;padding:3px 10px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;}
 
-/* ── Toast ── */
-.toast{position:fixed;bottom:24px;right:24px;padding:10px 20px;border-radius:8px;font-size:11px;letter-spacing:1px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:300;}
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;padding:10px 18px;border-radius:8px;font-size:11px;letter-spacing:.5px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:300;}
 .toast.show{opacity:1;}
-.toast.ok{background:#00c85318;border:1px solid #00c85344;color:#00c853;}
-.toast.err{background:#e74c3c18;border:1px solid #e74c3c44;color:#e74c3c;}
+.toast.ok{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);color:var(--c2);}
+.toast.err{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);color:var(--c4);}
 
-/* ── Empty ── */
-.empty-state{text-align:center;padding:32px;color:#1a3a4a;font-size:12px;letter-spacing:1px;}
-
-/* ── Scrollbar ── */
+.empty{color:var(--t3);font-size:12px;padding:24px;text-align:center;letter-spacing:.5px;}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:#ffffff0d;border-radius:2px;}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
 </style>
 </head>
 <body>
@@ -177,692 +222,602 @@ select option{background:#0c1a28;}
 <!-- Login -->
 <div id="loginScreen">
   <div class="login-card">
-    <div class="login-logo">SAUDI ARAMCO · CGPD</div>
+    <div class="login-orb"><div class="login-orb-dot"></div></div>
     <div class="login-title">SIMUSPHERE</div>
-    <div class="login-sub">ADMIN PANEL · RESTRICTED ACCESS</div>
-    <input type="password" id="pwInput" placeholder="Enter admin password"
-      onkeydown="if(event.key==='Enter')login()">
-    <button class="sign-in-btn" onclick="login()">SIGN IN</button>
+    <div class="login-sub">ADMIN · RESTRICTED ACCESS</div>
+    <input type="password" id="pwInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">SIGN IN</button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
 <!-- App -->
-<div id="adminApp">
+<div id="app">
   <div class="topbar">
-    <div class="topbar-brand">
-      <div class="topbar-dot"></div>
-      <div class="topbar-name">SIMUSPHERE</div>
-      <div class="topbar-badge">ADMIN</div>
+    <div class="tb-left">
+      <div class="tb-logo">
+        <div class="tb-orb"><div class="tb-orb-dot"></div></div>
+        <div class="tb-name">SimuSphere</div>
+      </div>
+      <div class="tb-div"></div>
+      <div class="tb-page" id="tbPage">Dashboard</div>
     </div>
-    <div class="topbar-right">
-      <button class="sign-out-btn" onclick="logout()">SIGN OUT</button>
+    <div class="tb-right">
+      <div class="live-pill"><div class="live-dot"></div>Live</div>
+      <button class="sign-out" onclick="logout()">Sign out</button>
     </div>
   </div>
 
-  <div class="nav-bar">
-    <button class="nav-item active" onclick="showPage('dashboard',this)">DASHBOARD</button>
-    <button class="nav-item" onclick="showPage('components',this)">COMPONENTS</button>
-    <button class="nav-item" onclick="showPage('settings',this)">SETTINGS</button>
-  </div>
-
-  <div class="content">
-
-    <!-- DASHBOARD -->
-    <div class="page active" id="page-dashboard">
-      <div class="stats-row">
-        <div class="stat-box blue"><div class="stat-num" id="sTotalQ">—</div><div class="stat-lbl">TOTAL QUESTIONS</div></div>
-        <div class="stat-box green"><div class="stat-num" id="sTotalC">—</div><div class="stat-lbl">COMPONENTS</div></div>
-        <div class="stat-box amber"><div class="stat-num" id="sActiveC">—</div><div class="stat-lbl">ACTIVE COMPONENTS</div></div>
-        <div class="stat-box purple"><div class="stat-num" id="sRestrict">—</div><div class="stat-lbl">RESTRICTED MODE</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          Most Used Components
-          <span id="lastActivity" style="font-size:9px;color:#2a5a6a;letter-spacing:1px;font-weight:400;"></span>
-        </div>
-        <div class="bar-list" id="topComps"><div class="empty-state">No activity yet</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">
-          Recent Questions
-          <button class="danger-btn" style="padding:3px 10px;font-size:9px;" onclick="clearStats()">CLEAR ALL</button>
-        </div>
-        <div class="q-scroll" id="recentQs"><div class="empty-state">No questions yet</div></div>
+  <div class="shell">
+    <div class="sb">
+      <div class="sb-sec">Overview</div>
+      <button class="ni on" onclick="go('dashboard',this)"><i class="ti ti-layout-dashboard" aria-hidden="true"></i>Dashboard</button>
+      <div class="sb-sec">Knowledge</div>
+      <button class="ni" onclick="go('components',this)"><i class="ti ti-cpu" aria-hidden="true"></i>Components<span class="ni-badge" id="compCount">0</span></button>
+      <button class="ni" onclick="go('add',this)"><i class="ti ti-plus" aria-hidden="true"></i>Add component</button>
+      <button class="ni" onclick="go('pdf',this)"><i class="ti ti-file-upload" aria-hidden="true"></i>PDF import</button>
+      <div class="sb-sec">System</div>
+      <button class="ni" onclick="go('ai',this)"><i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>AI settings</button>
+      <button class="ni" onclick="go('security',this)"><i class="ti ti-shield-lock" aria-hidden="true"></i>Security</button>
+      <div class="sb-spacer"></div>
+      <div class="sb-status">
+        <div class="sb-status-dot"></div>
+        <div class="sb-status-txt">Live</div>
+        <div class="sb-status-url">render.com</div>
       </div>
     </div>
 
-    <!-- COMPONENTS -->
-    <div class="page" id="page-components">
-      <div class="card">
-        <div class="card-title" id="formTitle">Add Component</div>
-
-        <label class="field-label">COMPONENT NAME</label>
-        <input type="text" id="compName" placeholder="e.g. Demister Pad" maxlength="100"
-          oninput="updateCharCount(this,'nameCount',100)">
-        <div class="char-count"><span id="nameCount">0</span>/100</div>
-
-        <label class="field-label">GENERAL KNOWLEDGE <span>(optional)</span></label>
-        <textarea id="compInfo" rows="4" placeholder="Function, operation, common issues..." maxlength="8000"
-          oninput="updateCharCount(this,'infoCount',8000)"></textarea>
-        <div class="char-count"><span id="infoCount">0</span>/8000</div>
-
-        <!-- PDF Upload -->
-        <label class="field-label">EXTRACT FROM PDF <span>(optional — AI will populate fields above)</span></label>
-        <div class="pdf-drop" id="pdfDrop">
-          <input type="file" accept=".pdf" id="pdfInput" onchange="handlePDF(this)">
-          <div class="pdf-icon">📄</div>
-          <div class="pdf-label">Drop PDF here or click to browse</div>
-          <div class="pdf-sub">AI will extract knowledge, checklist, hazards & buttons</div>
-        </div>
-        <div class="pdf-progress" id="pdfProgress">
-          <div class="pdf-bar-wrap"><div class="pdf-bar-fill" id="pdfBar"></div></div>
-          <div class="pdf-status" id="pdfStatus">Processing...</div>
-        </div>
-
-        <label class="field-label">INSPECTION CHECKLIST <span>(optional)</span></label>
-        <div class="dyn-list">
-          <div id="checklistItems"></div>
-          <button class="add-row-btn" onclick="addListItem('checklistItems','Checklist item...')">+ Add item</button>
-        </div>
-
-        <label class="field-label">SAFETY HAZARDS <span>(optional)</span></label>
-        <div class="dyn-list">
-          <div id="hazardItems"></div>
-          <button class="add-row-btn" onclick="addListItem('hazardItems','Safety hazard...')">+ Add hazard</button>
-        </div>
-
-        <label class="field-label">QUICK BUTTONS <span>(shown in chat — label → question)</span></label>
-        <div class="dyn-list">
-          <div id="buttonItems"></div>
-          <button class="add-row-btn" onclick="addBtnItem()">+ Add button</button>
-        </div>
-
-        <!-- Restrict toggle -->
-        <div class="toggle-row">
-          <div>
-            <div class="toggle-info">Restrict to KB Only</div>
-            <div class="toggle-sub">AI answers ONLY from info above — ignores general knowledge</div>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="restrictToggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="btn-row">
-          <button class="primary-btn" onclick="saveComp()">SAVE COMPONENT</button>
-          <button class="ghost-btn" onclick="clearForm()">CLEAR</button>
-        </div>
-      </div>
-
-      <!-- Saved list -->
-      <div class="card">
-        <div class="card-title">
-          Saved Components
-          <div style="display:flex;gap:6px;">
-            <button class="ghost-btn" style="padding:4px 10px;font-size:9px;" onclick="exportKB()">EXPORT</button>
-            <label style="cursor:pointer;">
-              <span class="ghost-btn" style="padding:4px 10px;font-size:9px;display:inline-block;">IMPORT</span>
-              <input type="file" accept=".json" style="display:none" onchange="importKB(this)">
-            </label>
-          </div>
-        </div>
-        <div class="search-bar">
-          <span class="search-icon">⌕</span>
-          <input type="text" id="searchInput" placeholder="Search components..." oninput="filterComps()">
-        </div>
-        <div class="comp-list" id="compList"><div class="empty-state">No components yet</div></div>
-      </div>
+    <div class="main" id="main">
+      <div id="pageContent"></div>
     </div>
-
-    <!-- SETTINGS -->
-    <div class="page" id="page-settings">
-      <div class="card">
-        <div class="card-title">AI Behaviour</div>
-        <label class="field-label">CUSTOM SYSTEM PROMPT <span>(appended to default instructions)</span></label>
-        <textarea id="aiPrompt" rows="4" placeholder="Additional instructions for VIS-7..."></textarea>
-        <label class="field-label">MAX RESPONSE LENGTH</label>
-        <div class="range-row">
-          <input type="range" id="maxWords" min="50" max="300" step="25" value="150"
-            oninput="document.getElementById('maxWordsVal').textContent=this.value">
-          <span class="range-val" id="maxWordsVal">150</span>
-          <span style="font-size:10px;color:#2a5a6a;">words</span>
-        </div>
-        <label class="field-label">DEFAULT RESPONSE LANGUAGE</label>
-        <select id="aiLang">
-          <option value="same">Match user's language (recommended)</option>
-          <option value="en">Always English</option>
-          <option value="ar">Always Arabic</option>
-        </select>
-        <div class="btn-row">
-          <button class="primary-btn" onclick="saveAISettings()">SAVE SETTINGS</button>
-          <button class="ghost-btn" onclick="loadAISettings()">RESET</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Change Admin Password</div>
-        <label class="field-label">NEW PASSWORD <span>(minimum 6 characters)</span></label>
-        <div class="pass-fields">
-          <input type="password" id="newPass" placeholder="New password">
-          <input type="password" id="confirmPass" placeholder="Confirm password">
-        </div>
-        <div class="btn-row">
-          <button class="primary-btn" onclick="changePassword()">UPDATE PASSWORD</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
-<!-- Undo bar -->
-<div id="undoBar">
-  <span id="undoMsg">Component deleted</span>
-  <button onclick="undoDelete()">UNDO</button>
-</div>
-
+<div id="undoBar"><span id="undoMsg">Deleted</span><button onclick="undoDelete()">Undo</button></div>
 <div class="toast" id="toast"></div>
 
 <script>
 'use strict';
+let pw='', allKB={}, deletedEntry=null, undoTimer=null;
 
-// ── State ─────────────────────────────────────────────────────────────────────
-let password = '';
-let allKB    = {};
-let deletedEntry = null;
-let undoTimer    = null;
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function safeAttr(s){return esc(s).replace(/'/g,'&#39;');}
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function esc(str) {
-  return String(str ?? '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function safeAttr(str) { return esc(str).replace(/'/g,'&#39;'); }
-
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className=`toast ${type} show`;
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
 }
 
-function updateCharCount(el, spanId, max) {
-  document.getElementById(spanId).textContent = el.value.length;
+async function api(url,opts={}){
+  return fetch(url,{...opts,headers:{'x-admin-password':pw,...(opts.headers||{})}});
 }
 
-async function apiFetch(url, opts = {}) {
-  const headers = { 'x-admin-password': password, ...(opts.headers || {}) };
-  const res = await fetch(url, { ...opts, headers });
-  return res;
-}
-
-// ── Auth ──────────────────────────────────────────────────────────────────────
-async function login() {
-  const pw  = document.getElementById('pwInput').value;
-  const err = document.getElementById('loginErr');
-  err.textContent = '';
-  try {
-    const r = await fetch('/admin/knowledge', { headers: { 'x-admin-password': pw } });
-    if (r.status === 401) { err.textContent = 'Incorrect password.'; return; }
-    password = pw;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminApp').style.display    = 'flex';
-    document.getElementById('adminApp').style.flexDirection = 'column';
+// Auth
+async function login(){
+  const p=document.getElementById('pwInput').value;
+  const err=document.getElementById('loginErr');
+  err.textContent='';
+  try{
+    const r=await fetch('/admin/knowledge',{headers:{'x-admin-password':p}});
+    if(r.status===401){err.textContent='Incorrect password.';return;}
+    pw=p;
+    document.getElementById('loginScreen').style.display='none';
+    const app=document.getElementById('app');
+    app.style.display='flex';app.style.flexDirection='column';
     loadAll();
-  } catch {
-    err.textContent = 'Connection error — check your network.';
-  }
+  }catch{err.textContent='Connection error.';}
+}
+function logout(){
+  pw='';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('pwInput').value='';
 }
 
-function logout() {
-  password = '';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('adminApp').style.display    = 'none';
-  document.getElementById('pwInput').value = '';
-  document.getElementById('loginErr').textContent = '';
+function loadAll(){loadDashboard();loadKB();}
+
+// Nav
+function go(name,btn){
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  btn.classList.add('on');
+  const titles={dashboard:'Dashboard',components:'Components',add:'Add component',pdf:'PDF import',ai:'AI settings',security:'Security'};
+  document.getElementById('tbPage').textContent=titles[name]||name;
+  const c=document.getElementById('pageContent');
+  c.style.opacity='0';
+  setTimeout(()=>{
+    renderPage(name,c);
+    c.style.transition='opacity .2s ease';
+    c.style.opacity='1';
+  },80);
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
-function showPage(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (name === 'dashboard')  loadDashboard();
-  if (name === 'components') loadComponents();
-  if (name === 'settings')   loadAISettings();
+function renderPage(name,c){
+  const pages={
+    dashboard:renderDashboard,
+    components:renderComponents,
+    add:()=>renderForm(),
+    pdf:renderPDF,
+    ai:renderAI,
+    security:renderSecurity,
+  };
+  c.innerHTML='';
+  const div=document.createElement('div');
+  div.className='page';
+  c.appendChild(div);
+  (pages[name]||renderDashboard)(div);
 }
 
-function loadAll() {
-  loadDashboard();
-  loadComponents();
-  loadAISettings();
-}
-
-// ── Dashboard ─────────────────────────────────────────────────────────────────
-async function loadDashboard() {
-  try {
-    const [sr, kr] = await Promise.all([
-      apiFetch('/admin/stats'),
-      apiFetch('/admin/knowledge'),
+// Dashboard
+async function loadDashboard(){}
+async function renderDashboard(container){
+  try{
+    const [sr,kr]=await Promise.all([
+      api('/admin/stats'),api('/admin/knowledge')
     ]);
-    const stats = await sr.json();
-    const kb    = await kr.json();
+    const stats=await sr.json();
+    const kb=await kr.json();
+    const compKeys=Object.keys(kb);
+    const restricted=compKeys.filter(k=>kb[k]?.restrictToKB).length;
 
-    const compKeys     = Object.keys(kb);
-    const activeKeys   = Object.keys(stats.components || {});
-    const restrictCount = compKeys.filter(k => kb[k]?.restrictToKB).length;
-
-    animateNum('sTotalQ',  stats.totalQuestions || 0);
-    animateNum('sTotalC',  compKeys.length);
-    animateNum('sActiveC', activeKeys.length);
-    animateNum('sRestrict', restrictCount);
-
-    if (stats.lastActivity) {
-      document.getElementById('lastActivity').textContent =
-        'Last: ' + new Date(stats.lastActivity).toLocaleString('en-GB', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' });
-    }
-
-    // Bar chart
-    const sorted = Object.entries(stats.components || {}).sort((a,b) => b[1]-a[1]).slice(0,8);
-    const max    = sorted[0]?.[1] || 1;
-    const topEl  = document.getElementById('topComps');
-    if (!sorted.length) { topEl.innerHTML = '<div class="empty-state">No activity yet</div>'; }
-    else {
-      topEl.innerHTML = sorted.map(([name, count]) => `
-        <div class="bar-row">
-          <div class="bar-name" title="${esc(name)}">${esc(name)}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/max*100)}%"></div></div>
-          <div class="bar-count">${count}</div>
-        </div>`).join('');
-    }
-
-    // Recent questions
-    const qs  = (stats.recentQuestions || []).slice(0, 60);
-    const qEl = document.getElementById('recentQs');
-    if (!qs.length) { qEl.innerHTML = '<div class="empty-state">No questions yet</div>'; }
-    else {
-      qEl.innerHTML = qs.map(q => `
-        <div class="q-row">
-          <div class="q-comp">${esc(q.component)}</div>
-          <div class="q-text">${esc(q.question)}</div>
-          <div class="q-time">${new Date(q.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
-        </div>`).join('');
-    }
-  } catch(e) { console.error('Dashboard error:', e); }
-}
-
-function animateNum(id, target) {
-  const el = document.getElementById(id);
-  const start = parseInt(el.textContent) || 0;
-  const diff  = target - start;
-  if (diff === 0) { el.textContent = target; return; }
-  const steps = 20;
-  let i = 0;
-  const timer = setInterval(() => {
-    i++;
-    el.textContent = Math.round(start + (diff * i / steps));
-    if (i >= steps) { el.textContent = target; clearInterval(timer); }
-  }, 20);
-}
-
-async function clearStats() {
-  if (!confirm('Clear all statistics? This cannot be undone.')) return;
-  const r = await apiFetch('/admin/stats', { method: 'DELETE' });
-  if (r.ok) { showToast('✓ Statistics cleared'); loadDashboard(); }
-  else showToast('Failed to clear', 'err');
-}
-
-// ── Components ────────────────────────────────────────────────────────────────
-async function loadComponents() {
-  try {
-    const r = await apiFetch('/admin/knowledge');
-    allKB = await r.json();
-    renderComps(allKB);
-  } catch { showToast('Failed to load components', 'err'); }
-}
-
-function renderComps(data) {
-  const list = document.getElementById('compList');
-  const keys = Object.keys(data);
-  if (!keys.length) { list.innerHTML = '<div class="empty-state">No components yet</div>'; return; }
-  list.innerHTML = keys.map(k => {
-    const c  = data[k];
-    const bt = (c.buttons   || []).length;
-    const cl = (c.checklist || []).length;
-    const hz = (c.hazards   || []).length;
-    const restricted = c.restrictToKB;
-    return `<div class="comp-row">
-      <div>
-        <div class="comp-row-name">
-          ${esc(k)}
-          <span class="comp-row-badge ${restricted ? 'badge-restricted' : 'badge-general'}">
-            ${restricted ? 'KB ONLY' : 'GENERAL'}
-          </span>
+    container.innerHTML=`
+    <div class="stats">
+      <div class="sc b1"><div class="sc-shimmer"></div><i class="ti ti-message-circle sc-icon" aria-hidden="true"></i><div class="sc-n" data-to="${stats.total||0}">0</div><div class="sc-l">Total questions</div></div>
+      <div class="sc b2"><div class="sc-shimmer"></div><i class="ti ti-cpu sc-icon" aria-hidden="true"></i><div class="sc-n" data-to="${compKeys.length}">0</div><div class="sc-l">Components</div></div>
+      <div class="sc b3"><div class="sc-shimmer"></div><i class="ti ti-lock sc-icon" aria-hidden="true"></i><div class="sc-n" data-to="${restricted}">0</div><div class="sc-l">KB restricted</div></div>
+      <div class="sc b4"><div class="sc-shimmer"></div><i class="ti ti-clock sc-icon" aria-hidden="true"></i><div class="sc-n" data-to="${(stats.recent||[]).length}">0</div><div class="sc-l">Recent questions</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hd"><span><i class="ti ti-chart-bar" aria-hidden="true"></i>Most used</span>
+          <div style="display:flex;gap:4px;">
+            <button class="act" style="font-size:9px;padding:2px 8px;" onclick="clearStats()">Clear stats</button>
+          </div>
         </div>
-        <div class="comp-row-meta">${bt} button${bt!==1?'s':''} · ${cl} checklist · ${hz} hazards</div>
+        ${renderBars(stats.components||{})}
       </div>
-      <div class="comp-actions">
-        <button class="act-btn copy" onclick="copyComp('${safeAttr(k)}')">COPY</button>
-        <button class="act-btn edit" onclick="editComp('${safeAttr(k)}')">EDIT</button>
-        <button class="act-btn del"  onclick="deleteComp('${safeAttr(k)}')">DELETE</button>
+      <div class="card">
+        <div class="card-hd"><i class="ti ti-clock" aria-hidden="true"></i>Recent questions</div>
+        ${renderRecent(stats.recent||[])}
+      </div>
+    </div>`;
+    animateNums(container);
+    setTimeout(()=>animateBars(container),100);
+  }catch(e){container.innerHTML='<div class="empty">Failed to load dashboard</div>';}
+}
+
+function renderBars(comps){
+  const sorted=Object.entries(comps).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(!sorted.length)return '<div class="empty">No activity yet</div>';
+  const max=sorted[0][1]||1;
+  return sorted.map(([n,c],i)=>`
+    <div class="br">
+      <div class="br-nm" title="${esc(n)}">${esc(n)}</div>
+      <div class="br-tr"><div class="br-fl ${i%2?'g':'c'}" data-w="${Math.round(c/max*100)}"></div></div>
+      <div class="br-ct">${c}</div>
+    </div>`).join('');
+}
+
+function renderRecent(qs){
+  if(!qs.length)return '<div class="empty">No questions yet</div>';
+  return qs.slice(0,5).map(q=>`
+    <div class="qi">
+      <div class="qi-comp">${esc(q.component)}</div>
+      <div class="qi-text">${esc(q.question)}</div>
+      <div class="qi-time">${new Date(q.time).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+    </div>`).join('');
+}
+
+function animateNums(c){
+  c.querySelectorAll('[data-to]').forEach(el=>{
+    const target=parseInt(el.dataset.to)||0;
+    let n=0;const step=Math.max(1,Math.ceil(target/30));
+    const t=setInterval(()=>{n=Math.min(n+step,target);el.textContent=n;if(n>=target)clearInterval(t);},25);
+  });
+}
+function animateBars(c){
+  c.querySelectorAll('.br-fl[data-w]').forEach(el=>{el.style.width=el.dataset.w+'%';});
+}
+
+async function clearStats(){
+  if(!confirm('Clear all statistics?'))return;
+  const r=await api('/admin/stats',{method:'DELETE'});
+  if(r.ok){toast('Statistics cleared');go('dashboard',document.querySelector('.ni.on'));}
+  else toast('Failed','err');
+}
+
+// Components
+async function loadKB(){
+  try{
+    const r=await api('/admin/knowledge');
+    allKB=await r.json();
+    document.getElementById('compCount').textContent=Object.keys(allKB).length;
+  }catch{}
+}
+
+function renderComponents(container){
+  const keys=Object.keys(allKB);
+  container.innerHTML=`
+    <div class="card">
+      <div class="card-hd">
+        <span><i class="ti ti-database" aria-hidden="true"></i>${keys.length} component${keys.length!==1?'s':''}</span>
+        <div style="display:flex;gap:5px;">
+          <button class="act" onclick="exportKB()">Export</button>
+          <label style="cursor:pointer;"><span class="act" style="display:inline-block;">Import</span><input type="file" accept=".json" style="display:none" onchange="importKB(this)"></label>
+        </div>
+      </div>
+      <div class="search-wrap">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input type="text" id="searchInput" placeholder="Search components..." oninput="filterComps(this.value)">
+      </div>
+      <div id="compRows">${renderCompRows(allKB)}</div>
+    </div>`;
+}
+
+function renderCompRows(data){
+  const keys=Object.keys(data);
+  if(!keys.length)return '<div class="empty">No components yet — add one from the sidebar</div>';
+  return keys.map((k,i)=>{
+    const c=data[k];
+    const bt=(c.buttons||[]).length;
+    return `<div class="cr" style="animation-delay:${i*.04}s">
+      <div>
+        <div class="cr-name">${esc(k)}<span class="pill ${c.restrictToKB?'kb':'gen'}">${c.restrictToKB?'KB only':'General AI'}</span></div>
+        <div class="cr-meta">${bt} quick button${bt!==1?'s':''}</div>
+      </div>
+      <div class="cr-acts">
+        <button class="act cp" onclick="copyComp('${safeAttr(k)}')">Copy</button>
+        <button class="act e" onclick="editComp('${safeAttr(k)}')">Edit</button>
+        <button class="act d" onclick="deleteComp('${safeAttr(k)}')">Delete</button>
       </div>
     </div>`;
   }).join('');
 }
 
-function filterComps() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = Object.fromEntries(Object.entries(allKB).filter(([k]) => k.toLowerCase().includes(q)));
-  renderComps(filtered);
+function filterComps(q){
+  const filtered=Object.fromEntries(Object.entries(allKB).filter(([k])=>k.toLowerCase().includes(q.toLowerCase())));
+  const rows=document.getElementById('compRows');
+  if(rows)rows.innerHTML=renderCompRows(filtered);
 }
 
-// ── Form ──────────────────────────────────────────────────────────────────────
-function addListItem(containerId, placeholder, value = '') {
-  const c = document.getElementById(containerId);
-  const d = document.createElement('div'); d.className = 'dyn-item';
-  d.innerHTML = `<input type="text" placeholder="${esc(placeholder)}" value="${safeAttr(value)}">
-    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
-  c.appendChild(d);
+// Form
+function renderForm(name='',comp={}){
+  const editing=!!name;
+  return `
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-${editing?'edit':'plus'}" aria-hidden="true"></i>${editing?'Editing: '+name:'New component'}</div>
+    <label class="fl">Component name</label>
+    <input type="text" id="fName" placeholder="e.g. Demister Pad" value="${safeAttr(name)}" maxlength="100" oninput="document.getElementById('nameCC').textContent=this.value.length">
+    <div class="char-count"><span id="nameCC">${name.length}</span>/100</div>
+
+    <label class="fl">General knowledge <span style="color:var(--t3);font-weight:300;">(optional)</span></label>
+    <textarea id="fInfo" rows="4" placeholder="Describe this component — function, operation, common issues..." maxlength="8000" oninput="document.getElementById('infoCC').textContent=this.value.length">${esc(comp.info||'')}</textarea>
+    <div class="char-count"><span id="infoCC">${(comp.info||'').length}</span>/8000</div>
+
+    <label class="fl">Quick buttons <span style="color:var(--t3);font-weight:300;">(optional — label + question)</span></label>
+    <div class="dyn-list">
+      <div id="btnItems"></div>
+      <button class="add-btn" onclick="addBtnItem()">+ Add button</button>
+    </div>
+
+    <div class="tog-row">
+      <div class="tog-info">
+        <div class="tog-l">Restrict to KB only</div>
+        <div class="tog-s">AI answers only from knowledge above</div>
+      </div>
+      <label class="tog"><input type="checkbox" id="fRestrict" ${comp.restrictToKB?'checked':''}><span class="tog-sl"></span></label>
+    </div>
+
+    <div class="btn-row">
+      <button class="pri-btn" onclick="saveComp()">Save component</button>
+      <button class="ghost-btn" onclick="clearForm()">Clear</button>
+    </div>
+  </div>`;
 }
 
-function addBtnItem(label = '', question = '') {
-  const c = document.getElementById('buttonItems');
-  const d = document.createElement('div'); d.className = 'dyn-item';
-  d.innerHTML = `
-    <input type="text" placeholder="Button label" value="${safeAttr(label)}" style="flex:.8">
+function goAdd(container){
+  container.innerHTML=renderForm();
+}
+
+function renderPage2(name,c){
+  if(name==='add'){c.innerHTML=renderForm();return;}
+}
+
+// Override renderPage for add
+const _orig=renderPage;
+window.renderPage=function(name,c){
+  if(name==='add'){
+    c.innerHTML='';
+    const div=document.createElement('div');div.className='page';
+    div.innerHTML=renderForm();c.appendChild(div);return;
+  }
+  _orig(name,c);
+};
+
+function addBtnItem(label='',question=''){
+  const c=document.getElementById('btnItems');
+  if(!c)return;
+  const d=document.createElement('div');d.className='dyn-item';
+  d.innerHTML=`<input type="text" placeholder="Button label" value="${safeAttr(label)}" style="flex:.8">
     <span class="dyn-sep">→</span>
     <input type="text" placeholder="Question to send" value="${safeAttr(question)}" style="flex:1.2">
-    <button class="rm-btn" onclick="this.parentElement.remove()">×</button>`;
+    <button class="rm-btn" onclick="this.parentElement.remove()" aria-label="Remove">×</button>`;
   c.appendChild(d);
 }
 
-function getListVals(id) {
-  return Array.from(document.querySelectorAll(`#${id} .dyn-item input`))
-    .map(i => i.value.trim()).filter(Boolean);
+function getBtnItems(){
+  return Array.from(document.querySelectorAll('#btnItems .dyn-item')).map(row=>{
+    const inputs=row.querySelectorAll('input');
+    return{label:inputs[0]?.value.trim()||'',question:inputs[1]?.value.trim()||''};
+  }).filter(b=>b.label&&b.question);
 }
 
-function getBtnVals() {
-  return Array.from(document.querySelectorAll('#buttonItems .dyn-item')).map(row => {
-    const inputs = row.querySelectorAll('input');
-    return { label: inputs[0]?.value.trim() || '', question: inputs[1]?.value.trim() || '' };
-  }).filter(b => b.label && b.question);
+function clearForm(){
+  ['fName','fInfo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const bi=document.getElementById('btnItems');if(bi)bi.innerHTML='';
+  const r=document.getElementById('fRestrict');if(r)r.checked=false;
+  const nc=document.getElementById('nameCC');if(nc)nc.textContent='0';
+  const ic=document.getElementById('infoCC');if(ic)ic.textContent='0';
 }
 
-function clearForm() {
-  ['compName','compInfo'].forEach(id => document.getElementById(id).value = '');
-  ['checklistItems','hazardItems','buttonItems'].forEach(id => document.getElementById(id).innerHTML = '');
-  document.getElementById('restrictToggle').checked = false;
-  document.getElementById('formTitle').textContent = 'Add Component';
-  document.getElementById('nameCount').textContent = '0';
-  document.getElementById('infoCount').textContent = '0';
-  document.getElementById('pdfProgress').classList.remove('show');
-}
-
-function fillForm(name, comp) {
-  document.getElementById('compName').value = name;
-  document.getElementById('compInfo').value = comp.info || '';
-  document.getElementById('nameCount').textContent = name.length;
-  document.getElementById('infoCount').textContent = (comp.info || '').length;
-  document.getElementById('checklistItems').innerHTML = '';
-  document.getElementById('hazardItems').innerHTML    = '';
-  document.getElementById('buttonItems').innerHTML    = '';
-  (comp.checklist || []).forEach(v => addListItem('checklistItems', 'Checklist item...', v));
-  (comp.hazards   || []).forEach(v => addListItem('hazardItems',    'Safety hazard...', v));
-  (comp.buttons   || []).forEach(b => addBtnItem(b.label, b.question));
-  document.getElementById('restrictToggle').checked = !!comp.restrictToKB;
-}
-
-// ── CRUD ──────────────────────────────────────────────────────────────────────
-async function saveComp() {
-  const name = document.getElementById('compName').value.trim();
-  if (!name) { showToast('Component name required', 'err'); return; }
-
-  const body = {
+async function saveComp(){
+  const name=(document.getElementById('fName')?.value||'').trim();
+  if(!name){toast('Component name required','err');return;}
+  const body={
     name,
-    info:        document.getElementById('compInfo').value.trim(),
-    checklist:   getListVals('checklistItems'),
-    hazards:     getListVals('hazardItems'),
-    buttons:     getBtnVals(),
-    restrictToKB: document.getElementById('restrictToggle').checked,
+    info:document.getElementById('fInfo')?.value.trim()||'',
+    buttons:getBtnItems(),
+    restrictToKB:document.getElementById('fRestrict')?.checked||false,
   };
-
-  try {
-    const r = await apiFetch('/admin/knowledge', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-    const d = await r.json();
-    if (r.ok) { showToast('✓ Saved successfully'); clearForm(); loadComponents(); }
-    else showToast(d.error || 'Save failed', 'err');
-  } catch { showToast('Network error', 'err'); }
+  try{
+    const r=await api('/admin/knowledge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(r.ok){
+      toast('✓ Saved');
+      await loadKB();
+      go('components',document.querySelector('.ni[onclick*="components"]'));
+    }else toast(d.error||'Save failed','err');
+  }catch{toast('Network error','err');}
 }
 
-function editComp(name) {
-  const comp = allKB[name];
-  if (!comp) return;
-  fillForm(name, comp);
-  document.getElementById('formTitle').textContent = 'Editing: ' + name;
-  document.querySelector('[onclick="showPage(\'components\',this)"]').click();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function editComp(name){
+  const comp=allKB[name]||{};
+  const c=document.getElementById('pageContent');
+  c.style.opacity='0';
+  setTimeout(()=>{
+    c.innerHTML='';
+    const div=document.createElement('div');div.className='page';
+    div.innerHTML=renderForm(name,comp);c.appendChild(div);
+    (comp.buttons||[]).forEach(b=>addBtnItem(b.label,b.question));
+    document.getElementById('tbPage').textContent='Edit: '+name;
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+    document.querySelector('.ni[onclick*="add"]').classList.add('on');
+    c.style.transition='opacity .2s';c.style.opacity='1';
+  },80);
 }
 
-function copyComp(name) {
-  const comp = allKB[name];
-  if (!comp) return;
-  fillForm(name + ' (Copy)', comp);
-  document.getElementById('formTitle').textContent = 'Copy of: ' + name;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  showToast('✓ Copied — edit and save');
+function copyComp(name){
+  const comp=allKB[name]||{};
+  editComp(name);
+  setTimeout(()=>{
+    const fn=document.getElementById('fName');
+    if(fn){fn.value=name+' (Copy)';document.getElementById('nameCC').textContent=fn.value.length;}
+    document.getElementById('tbPage').textContent='Copy of: '+name;
+    toast('✓ Copied — edit and save');
+  },150);
 }
 
-async function deleteComp(name) {
-  deletedEntry = { name, data: allKB[name] };
-  try {
-    const r = await apiFetch('/admin/knowledge/' + encodeURIComponent(name), { method: 'DELETE' });
-    if (!r.ok) { showToast('Delete failed', 'err'); deletedEntry = null; return; }
-    loadComponents();
-    showUndoBar('Component deleted: ' + name);
-  } catch { showToast('Network error', 'err'); }
+async function deleteComp(name){
+  deletedEntry={name,data:allKB[name]};
+  try{
+    const r=await api('/admin/knowledge/'+encodeURIComponent(name),{method:'DELETE'});
+    if(!r.ok){toast('Delete failed','err');deletedEntry=null;return;}
+    await loadKB();
+    renderCompRows2();
+    showUndo('Deleted: '+name);
+  }catch{toast('Network error','err');}
 }
 
-async function undoDelete() {
-  if (!deletedEntry) return;
-  hideUndoBar();
-  try {
-    await apiFetch('/admin/knowledge', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: deletedEntry.name, ...deletedEntry.data }),
-    });
-    showToast('✓ Restored: ' + deletedEntry.name);
-    deletedEntry = null;
-    loadComponents();
-  } catch { showToast('Restore failed', 'err'); }
+function renderCompRows2(){
+  const rows=document.getElementById('compRows');
+  if(rows)rows.innerHTML=renderCompRows(allKB);
+  const cc=document.getElementById('compCount');
+  if(cc)cc.textContent=Object.keys(allKB).length;
 }
 
-function showUndoBar(msg) {
-  const bar = document.getElementById('undoBar');
-  document.getElementById('undoMsg').textContent = msg;
+function showUndo(msg){
+  const bar=document.getElementById('undoBar');
+  document.getElementById('undoMsg').textContent=msg;
   bar.classList.add('show');
   clearTimeout(undoTimer);
-  undoTimer = setTimeout(() => { hideUndoBar(); deletedEntry = null; }, 6000);
-}
-function hideUndoBar() { document.getElementById('undoBar').classList.remove('show'); }
-
-// ── PDF ───────────────────────────────────────────────────────────────────────
-async function handlePDF(input) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const compName = document.getElementById('compName').value.trim();
-  if (!compName) { showToast('Enter component name first', 'err'); input.value = ''; return; }
-
-  const progress = document.getElementById('pdfProgress');
-  const bar      = document.getElementById('pdfBar');
-  const status   = document.getElementById('pdfStatus');
-  progress.classList.add('show');
-  bar.style.width = '20%';
-  status.textContent = 'Reading PDF...';
-
-  try {
-    // Read file as base64, extract text client-side using basic approach
-    const arrayBuffer = await file.arrayBuffer();
-    const uint8 = new Uint8Array(arrayBuffer);
-
-    // Extract readable text from PDF bytes
-    let text = '';
-    const decoder = new TextDecoder('utf-8', { fatal: false });
-    const raw = decoder.decode(uint8);
-    // Extract text between BT/ET markers (basic PDF text extraction)
-    const matches = raw.matchAll(/\(([^)]{1,500})\)/g);
-    for (const m of matches) {
-      const chunk = m[1].replace(/\\n/g,' ').replace(/\\/g,'').trim();
-      if (chunk.length > 3) text += chunk + ' ';
-      if (text.length > 12000) break;
-    }
-
-    if (!text.trim()) {
-      showToast('Could not extract text — try a text-based PDF', 'err');
-      progress.classList.remove('show');
-      input.value = '';
-      return;
-    }
-
-    bar.style.width = '50%';
-    status.textContent = 'Analyzing with AI...';
-
-    const r = await apiFetch('/admin/extract-pdf', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pdfText: text, componentName: compName }),
-    });
-    const result = await r.json();
-
-    if (!r.ok || !result.data) {
-      showToast(result.error || 'Extraction failed', 'err');
-      progress.classList.remove('show');
-      input.value = '';
-      return;
-    }
-
-    bar.style.width = '90%';
-    status.textContent = 'Filling fields...';
-
-    const d = result.data;
-    if (d.info) {
-      document.getElementById('compInfo').value = d.info;
-      document.getElementById('infoCount').textContent = d.info.length;
-    }
-    document.getElementById('checklistItems').innerHTML = '';
-    document.getElementById('hazardItems').innerHTML    = '';
-    document.getElementById('buttonItems').innerHTML    = '';
-    (d.checklist || []).forEach(v => addListItem('checklistItems', 'Checklist item...', v));
-    (d.hazards   || []).forEach(v => addListItem('hazardItems',    'Safety hazard...', v));
-    (d.buttons   || []).forEach(b => addBtnItem(b.label, b.question));
-
-    bar.style.width = '100%';
-    status.textContent = 'Done!';
-    setTimeout(() => progress.classList.remove('show'), 1500);
-    showToast('✓ PDF extracted successfully');
-  } catch(e) {
-    console.error('PDF error:', e);
-    showToast('Failed to process PDF', 'err');
-    progress.classList.remove('show');
-  }
-  input.value = '';
+  undoTimer=setTimeout(()=>{bar.classList.remove('show');deletedEntry=null;},6000);
 }
 
-// ── Export / Import ───────────────────────────────────────────────────────────
-async function exportKB() {
-  const r    = await apiFetch('/admin/export');
-  const blob = await r.blob();
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
-  a.download = 'simusphere-kb.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast('✓ Exported');
+async function undoDelete(){
+  if(!deletedEntry)return;
+  document.getElementById('undoBar').classList.remove('show');
+  try{
+    await api('/admin/knowledge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:deletedEntry.name,...deletedEntry.data})});
+    toast('✓ Restored: '+deletedEntry.name);
+    deletedEntry=null;
+    await loadKB();
+    renderCompRows2();
+  }catch{toast('Restore failed','err');}
 }
 
-async function importKB(input) {
-  const file = input.files[0];
-  if (!file) return;
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    if (typeof data !== 'object' || Array.isArray(data))
-      throw new Error('Invalid format');
-    const count = Object.keys(data).length;
-    if (!confirm(`Import ${count} components? This will overwrite the current knowledge base.`)) {
-      input.value = ''; return;
+// Export/Import
+async function exportKB(){
+  const r=await api('/admin/export');
+  const blob=await r.blob();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='simusphere-kb.json';a.click();
+  URL.revokeObjectURL(a.href);toast('✓ Exported');
+}
+
+async function importKB(input){
+  const file=input.files[0];if(!file)return;
+  try{
+    const data=JSON.parse(await file.text());
+    if(typeof data!=='object'||Array.isArray(data))throw new Error();
+    const count=Object.keys(data).length;
+    if(!confirm(`Import ${count} components? This replaces the current knowledge base.`)){input.value='';return;}
+    const r=await api('/admin/import',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const res=await r.json();
+    if(r.ok){toast(`✓ Imported ${res.count} components`);await loadKB();renderCompRows2();}
+    else toast(res.error||'Import failed','err');
+  }catch{toast('Invalid JSON file','err');}
+  input.value='';
+}
+
+// PDF
+function renderPDF(container){
+  container.innerHTML=`
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-file-upload" aria-hidden="true"></i>PDF import</div>
+    <label class="fl">Component name</label>
+    <input type="text" id="pdfCompName" placeholder="e.g. Demister Pad">
+    <label class="fl" style="margin-top:14px;">Upload PDF</label>
+    <div class="pdf-zone" id="pdfDrop">
+      <input type="file" accept=".pdf" id="pdfInput" onchange="handlePDF(this)">
+      <i class="ti ti-file-text pdf-icon" aria-hidden="true"></i>
+      <div class="pdf-lbl">Drop PDF here or click to browse</div>
+      <div class="pdf-sub">AI will extract knowledge and quick buttons automatically</div>
+    </div>
+    <div class="pdf-prog" id="pdfProg">
+      <div class="pdf-bar-wrap"><div class="pdf-bar" id="pdfBar"></div></div>
+      <div class="pdf-status" id="pdfStatus">Processing...</div>
+    </div>
+    <div id="pdfResult"></div>
+  </div>`;
+  const drop=document.getElementById('pdfDrop');
+  ['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('drag');}));
+  ['dragleave','drop'].forEach(e=>drop.addEventListener(e,()=>drop.classList.remove('drag')));
+}
+
+async function handlePDF(input){
+  const file=input.files[0];if(!file)return;
+  const name=(document.getElementById('pdfCompName')?.value||'').trim();
+  if(!name){toast('Enter component name first','err');input.value='';return;}
+  const prog=document.getElementById('pdfProg');
+  const bar=document.getElementById('pdfBar');
+  const status=document.getElementById('pdfStatus');
+  prog.classList.add('show');bar.style.width='15%';status.textContent='Reading PDF...';
+  try{
+    const ab=await file.arrayBuffer();
+    const raw=new TextDecoder('utf-8',{fatal:false}).decode(new Uint8Array(ab));
+    let text='';
+    for(const m of raw.matchAll(/\(([^)]{1,500})\)/g)){
+      const chunk=m[1].replace(/\\n/g,' ').replace(/\\/g,'').trim();
+      if(chunk.length>3)text+=chunk+' ';
+      if(text.length>12000)break;
     }
-    const r   = await apiFetch('/admin/import', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    const res = await r.json();
-    if (r.ok) { showToast(`✓ Imported ${res.count} components`); loadComponents(); }
-    else showToast(res.error || 'Import failed', 'err');
-  } catch(e) {
-    showToast('Invalid JSON file', 'err');
-  }
-  input.value = '';
+    if(!text.trim()){toast('Could not extract text — use a text-based PDF','err');prog.classList.remove('show');input.value='';return;}
+    bar.style.width='45%';status.textContent='AI analyzing...';
+    const r=await api('/admin/extract-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pdfText:text,componentName:name})});
+    const result=await r.json();
+    if(!r.ok||!result.data){toast(result.error||'Extraction failed','err');prog.classList.remove('show');input.value='';return;}
+    bar.style.width='100%';status.textContent='Done!';
+    const d=result.data;
+    document.getElementById('pdfResult').innerHTML=`
+      <div class="pdf-ok"><i class="ti ti-check" aria-hidden="true"></i>Extracted successfully — review and save</div>`;
+    setTimeout(()=>{
+      prog.classList.remove('show');
+      const comp={info:d.info||'',buttons:d.buttons||[],restrictToKB:false};
+      const c=document.getElementById('pageContent');
+      c.style.opacity='0';
+      setTimeout(()=>{
+        c.innerHTML='';
+        const div=document.createElement('div');div.className='page';
+        div.innerHTML=renderForm(name,comp);c.appendChild(div);
+        (d.buttons||[]).forEach(b=>addBtnItem(b.label,b.question));
+        document.getElementById('tbPage').textContent='Review: '+name;
+        document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+        document.querySelector('.ni[onclick*="add"]').classList.add('on');
+        c.style.transition='opacity .2s';c.style.opacity='1';
+        toast('✓ PDF extracted — review and save');
+      },400);
+    },800);
+  }catch(e){console.error(e);toast('Failed to process PDF','err');prog.classList.remove('show');}
+  input.value='';
 }
 
-// ── AI Settings ───────────────────────────────────────────────────────────────
-function loadAISettings() {
-  const s = JSON.parse(localStorage.getItem('simusphere_ai_settings') || '{}');
-  document.getElementById('aiPrompt').value  = s.prompt   || '';
-  document.getElementById('maxWords').value  = s.maxWords || 150;
-  document.getElementById('maxWordsVal').textContent = s.maxWords || 150;
-  document.getElementById('aiLang').value    = s.lang     || 'same';
+// AI Settings
+function renderAI(container){
+  const s=JSON.parse(localStorage.getItem('ss_ai')||'{}');
+  container.innerHTML=`
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-robot" aria-hidden="true"></i>VIS-7 behaviour</div>
+    <label class="fl">Custom system prompt <span style="color:var(--t3);font-weight:300;">(optional)</span></label>
+    <textarea id="aiPrompt" rows="4" placeholder="Additional instructions for VIS-7...">${esc(s.prompt||'')}</textarea>
+    <label class="fl">Max response length</label>
+    <div class="range-row">
+      <input type="range" min="50" max="300" step="25" value="${s.maxWords||150}" oninput="document.getElementById('wc').textContent=this.value">
+      <span class="range-val" id="wc">${s.maxWords||150}</span>
+      <span style="font-size:10px;color:var(--t3);">words</span>
+    </div>
+    <label class="fl">Default response language</label>
+    <select id="aiLang">
+      <option value="same" ${(s.lang||'same')==='same'?'selected':''}>Match user's language</option>
+      <option value="en" ${s.lang==='en'?'selected':''}>Always English</option>
+      <option value="ar" ${s.lang==='ar'?'selected':''}>Always Arabic</option>
+    </select>
+    <div class="btn-row">
+      <button class="pri-btn" onclick="saveAI()">Save settings</button>
+      <button class="ghost-btn" onclick="loadAISettings()">Reset</button>
+    </div>
+  </div>
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-toggle-left" aria-hidden="true"></i>Response toggles</div>
+    <div class="tog-row"><div class="tog-info"><div class="tog-l">Auto-speak AI responses</div><div class="tog-s">Text-to-speech on every message</div></div><label class="tog"><input type="checkbox" ${s.autoSpeak?'checked':''}><span class="tog-sl"></span></label></div>
+    <div class="tog-row"><div class="tog-info"><div class="tog-l">Voice input enabled</div><div class="tog-s">Speech recognition for questions</div></div><label class="tog"><input type="checkbox" ${s.voiceInput!==false?'checked':''}><span class="tog-sl"></span></label></div>
+  </div>`;
 }
 
-function saveAISettings() {
-  const s = {
-    prompt:   document.getElementById('aiPrompt').value.trim(),
-    maxWords: document.getElementById('maxWords').value,
-    lang:     document.getElementById('aiLang').value,
+function saveAI(){
+  const s={
+    prompt:document.getElementById('aiPrompt')?.value.trim()||'',
+    maxWords:document.getElementById('wc')?.textContent||'150',
+    lang:document.getElementById('aiLang')?.value||'same',
   };
-  localStorage.setItem('simusphere_ai_settings', JSON.stringify(s));
-  showToast('✓ AI settings saved');
+  localStorage.setItem('ss_ai',JSON.stringify(s));
+  toast('✓ AI settings saved');
 }
 
-// ── Password ──────────────────────────────────────────────────────────────────
-async function changePassword() {
-  const np = document.getElementById('newPass').value;
-  const cp = document.getElementById('confirmPass').value;
-  if (np.length < 6) { showToast('Minimum 6 characters', 'err'); return; }
-  if (np !== cp)     { showToast('Passwords do not match', 'err'); return; }
-  try {
-    const r = await apiFetch('/admin/change-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ newPassword: np }),
-    });
-    if (r.ok) {
-      password = np;
-      document.getElementById('newPass').value    = '';
-      document.getElementById('confirmPass').value = '';
-      showToast('✓ Password updated');
-    } else {
-      const d = await r.json();
-      showToast(d.error || 'Failed', 'err');
-    }
-  } catch { showToast('Network error', 'err'); }
+function loadAISettings(){
+  localStorage.removeItem('ss_ai');
+  go('ai',document.querySelector('.ni[onclick*="ai"]'));
+  toast('Settings reset');
 }
 
-// ── Drag & drop PDF highlight ─────────────────────────────────────────────────
-const pdfDrop = document.getElementById('pdfDrop');
-['dragover','dragenter'].forEach(e => pdfDrop.addEventListener(e, ev => { ev.preventDefault(); pdfDrop.classList.add('drag'); }));
-['dragleave','drop'].forEach(e => pdfDrop.addEventListener(e, () => pdfDrop.classList.remove('drag')));
+// Security
+function renderSecurity(container){
+  container.innerHTML=`
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-key" aria-hidden="true"></i>Admin password</div>
+    <label class="fl">New password <span style="color:var(--t3);font-weight:300;">(min 6 characters)</span></label>
+    <input type="password" id="newPass" placeholder="New password" style="margin-bottom:8px;">
+    <input type="password" id="confirmPass" placeholder="Confirm password">
+    <div class="btn-row"><button class="pri-btn" onclick="changePassword()">Update password</button></div>
+  </div>
+  <div class="form-card">
+    <div class="form-title"><i class="ti ti-shield" aria-hidden="true"></i>Rate limits</div>
+    <div class="sec-row"><div><div style="font-size:12px;color:var(--t1);">Requests per minute</div><div style="font-size:10px;color:var(--t3);margin-top:1px;">Per IP address</div></div><div class="sec-val" style="color:var(--c1);">30</div></div>
+    <div class="sec-row"><div><div style="font-size:12px;color:var(--t1);">Max question length</div><div style="font-size:10px;color:var(--t3);margin-top:1px;">Characters per request</div></div><div class="sec-val" style="color:var(--c2);">500</div></div>
+    <div class="sec-row"><div><div style="font-size:12px;color:var(--t1);">Max request body</div><div style="font-size:10px;color:var(--t3);margin-top:1px;">Per request</div></div><div class="sec-val" style="color:#ffb347;">10mb</div></div>
+  </div>`;
+}
+
+async function changePassword(){
+  const np=document.getElementById('newPass')?.value||'';
+  const cp=document.getElementById('confirmPass')?.value||'';
+  if(np.length<6){toast('Min 6 characters','err');return;}
+  if(np!==cp){toast('Passwords do not match','err');return;}
+  try{
+    const r=await api('/admin/change-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({newPassword:np})});
+    if(r.ok){pw=np;document.getElementById('newPass').value='';document.getElementById('confirmPass').value='';toast('✓ Password updated');}
+    else{const d=await r.json();toast(d.error||'Failed','err');}
+  }catch{toast('Network error','err');}
+}
 </script>
 </body>
 </html>
