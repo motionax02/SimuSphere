@@ -36,8 +36,13 @@ body{background:#050e1a;font-family:'Inter',sans-serif;color:#ccdde8;height:100v
 .bbl{max-width:76%;padding:10px 14px;font-size:12px;line-height:1.7;font-weight:300;}
 .msg.ai .bbl{background:linear-gradient(135deg,#0a1f33,#0a1f14);border:1px solid #ffffff0f;border-radius:2px 10px 10px 10px;color:#c8dde8;}
 .msg.user .bbl{background:linear-gradient(135deg,#1a1400,#0f1a00);border:1px solid #f5a62322;border-radius:10px 2px 10px 10px;color:#f0d090;}
-.msg-meta{font-size:8px;color:#2a4a5a;margin-top:4px;letter-spacing:1px;}
-.msg.user .msg-meta{text-align:right;}
+.msg-meta{font-size:8px;color:#2a4a5a;margin-top:4px;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+.msg.user .msg-meta{justify-content:flex-end;}
+.speak-btn{background:transparent;border:none;cursor:pointer;padding:0;display:flex;align-items:center;opacity:0.4;transition:opacity 0.2s;}
+.speak-btn:hover{opacity:1;}
+.speak-btn.speaking{opacity:1;}
+.speak-btn svg{width:12px;height:12px;fill:none;stroke:#4db8ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.speak-btn.speaking svg{stroke:#00c853;}
 .typing{display:none;align-items:center;gap:8px;}
 .typing.active{display:flex;}
 .tdots span{display:inline-block;width:4px;height:4px;border-radius:50%;margin:0 2px;animation:tdot 1.4s ease-in-out infinite;}
@@ -60,8 +65,6 @@ textarea::placeholder{color:#2a4a5a;}
 .mic-btn:hover{border-color:#4db8ff33;}
 .mic-btn.listening{background:#cc000022;border-color:#cc0000aa;animation:pulse-mic 1s ease-in-out infinite;}
 .mic-btn.listening svg{stroke:#ff4444;}
-.mic-btn.retrying{background:#f5a62322;border-color:#f5a62366;}
-.mic-btn.retrying svg{stroke:#f5a623;}
 @keyframes pulse-mic{0%,100%{box-shadow:0 0 0 0 #cc000033;}50%{box-shadow:0 0 0 6px #cc000000;}}
 .mic-btn svg{width:16px;height:16px;fill:none;stroke:#5a8aaa;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.2s;}
 .voice-status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0a1a2aee;border:1px solid #4db8ff33;border-radius:12px;padding:20px 30px;text-align:center;font-size:12px;color:#4db8ff;letter-spacing:1px;z-index:100;display:none;backdrop-filter:blur(10px);}
@@ -99,7 +102,11 @@ textarea::placeholder{color:#2a4a5a;}
     <div class="av ai"><canvas id="avc" width="30" height="30"></canvas></div>
     <div>
       <div class="bbl">Welcome. You are viewing <span style="color:#4db8ff;font-weight:500" id="compSpan">this component</span>. What would you like to know?</div>
-      <div class="msg-meta">AI SIMUSPHERE</div>
+      <div class="msg-meta">AI SIMUSPHERE
+        <button class="speak-btn" onclick="speakText(this)" data-text="Welcome. What would you like to know?">
+          <svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </button>
+      </div>
     </div>
   </div>
   <div class="typing" id="typing">
@@ -146,67 +153,65 @@ async function loadQuickButtons(){
 }
 loadQuickButtons();
 
-// Voice
+// TTS
+let currentSpeakBtn=null;
+function speakText(btn){
+  const text=btn.getAttribute('data-text');
+  if(window.speechSynthesis.speaking){
+    window.speechSynthesis.cancel();
+    if(currentSpeakBtn){currentSpeakBtn.classList.remove('speaking');}
+    if(currentSpeakBtn===btn){currentSpeakBtn=null;return;}
+  }
+  const utt=new SpeechSynthesisUtterance(text);
+  utt.lang='en-US';
+  utt.rate=0.95;
+  utt.onend=()=>{btn.classList.remove('speaking');currentSpeakBtn=null;};
+  utt.onerror=()=>{btn.classList.remove('speaking');currentSpeakBtn=null;};
+  currentSpeakBtn=btn;
+  btn.classList.add('speaking');
+  window.speechSynthesis.speak(utt);
+}
+
+// Voice input
 let recognition=null;
 let isListening=false;
-
 function initRecognition(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR) return null;
+  if(!SR)return null;
   const r=new SR();
-  r.lang='en-US';
-  r.interimResults=false;
-  r.maxAlternatives=1;
+  r.lang='en-US';r.interimResults=false;r.maxAlternatives=1;
   r.onresult=e=>{
     const text=e.results[0][0].transcript;
     stopListening();
-    if(text.trim()){
-      document.getElementById('inp').value=text;
-      send();
-    }
+    if(text.trim()){document.getElementById('inp').value=text;send();}
   };
   r.onerror=e=>{
     stopListening();
-    if(e.error==='no-speech'){
-      showVoiceStatus('No speech detected — tap 🎤 to retry',1500);
-    }
+    if(e.error==='no-speech') showVoiceStatus('No speech detected — tap 🎤 to retry',1500);
   };
-  r.onend=()=>{ if(isListening) stopListening(); };
+  r.onend=()=>{if(isListening)stopListening();};
   return r;
 }
-
-function toggleMic(){
-  if(isListening){ stopListening(); return; }
-  startListening();
-}
-
+function toggleMic(){if(isListening){stopListening();return;}startListening();}
 function startListening(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){ showVoiceStatus('Voice not supported on this browser',1500); return; }
-  recognition=initRecognition();
-  recognition.start();
-  isListening=true;
-  const btn=document.getElementById('micBtn');
-  btn.classList.add('listening');
+  if(!SR){showVoiceStatus('Voice not supported on this browser',1500);return;}
+  recognition=initRecognition();recognition.start();isListening=true;
+  document.getElementById('micBtn').classList.add('listening');
   showVoiceStatus('LISTENING...',0);
 }
-
 function stopListening(){
   isListening=false;
-  if(recognition){ try{recognition.stop();}catch(e){} recognition=null; }
-  document.getElementById('micBtn').classList.remove('listening','retrying');
+  if(recognition){try{recognition.stop();}catch(e){}recognition=null;}
+  document.getElementById('micBtn').classList.remove('listening');
   hideVoiceStatus();
 }
-
 function showVoiceStatus(msg,duration){
   const vs=document.getElementById('voiceStatus');
-  document.getElementById('vsText').textContent=msg;
-  vs.classList.add('show');
-  if(duration>0) setTimeout(hideVoiceStatus,duration);
+  document.getElementById('vsText').textContent=msg;vs.classList.add('show');
+  if(duration>0)setTimeout(hideVoiceStatus,duration);
 }
-function hideVoiceStatus(){
-  document.getElementById('voiceStatus').classList.remove('show');
-}
+function hideVoiceStatus(){document.getElementById('voiceStatus').classList.remove('show');}
 
 function drawOrb(canvas,size,speed){
   const ctx=canvas.getContext('2d');let a=0,pulse=0;
@@ -239,7 +244,8 @@ function addMsg(role,text){
   const typing=document.getElementById('typing');
   const div=document.createElement('div');div.className='msg '+role;
   const isAI=role==='ai';
-  div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+(isAI?'<canvas width="30" height="30"></canvas>':'YOU')+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+'</div></div>';
+  const speakBtnHTML=isAI?`<button class="speak-btn" onclick="speakText(this)" data-text="${text.replace(/"/g,'&quot;')}"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>`:'';
+  div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+(isAI?'<canvas width="30" height="30"></canvas>':'YOU')+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+speakBtnHTML+'</div></div>';
   msgs.insertBefore(div,typing);
   if(isAI){const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);}
   msgs.scrollTop=msgs.scrollHeight;
@@ -250,6 +256,7 @@ async function send(){
   const text=inp.value.trim();if(!text)return;
   inp.value='';inp.style.height='auto';
   document.getElementById('sendBtn').disabled=true;
+  if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();if(currentSpeakBtn){currentSpeakBtn.classList.remove('speaking');currentSpeakBtn=null;}}
   addMsg('user',text);setTyping(true);
   try{
     const res=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:text,component})});
