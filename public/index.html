@@ -259,7 +259,7 @@ function addMsg(role,text){
   const speakBtnHTML=isAI?`<button class="speak-btn" onclick="speakText(this)" data-text="${text.replace(/"/g,'&quot;')}"><svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>`:'';
   div.innerHTML='<div class="av '+(isAI?'ai':'usr')+'">'+(isAI?'<canvas width="30" height="30"></canvas>':'YOU')+'</div><div><div class="bbl">'+text+'</div><div class="msg-meta">'+(isAI?'SIMUSPHERE AI':'INSPECTOR')+' · '+getTime()+speakBtnHTML+'</div></div>';
   msgs.insertBefore(div,typing);
-  if(isAI){const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);}
+  if(isAI){const c=div.querySelector('canvas');if(c)drawOrb(c,30,0.01);const sb=div.querySelector('.speak-btn');if(sb)setTimeout(()=>speakAI(text,sb),300);}
   msgs.scrollTop=msgs.scrollHeight;
 }
 function setTyping(on){document.getElementById('typing').className='typing'+(on?' active':'');document.getElementById('msgs').scrollTop=99999;}
