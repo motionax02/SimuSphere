@@ -155,19 +155,7 @@ loadQuickButtons();
 
 // TTS
 let currentSpeakBtn=null;
-let cachedVoice=null;
-function getMaleVoice(){
-  const voices=window.speechSynthesis.getVoices();
-  if(cachedVoice)return cachedVoice;
-  cachedVoice=voices.find(v=>/david|mark|fred|ralph|albert/i.test(v.name))||
-    voices.find(v=>v.name.includes('Microsoft David'))||
-    voices.find(v=>v.gender==='male')||
-    voices.find(v=>v.lang==='en-US'&&/man|male|guy/i.test(v.name))||
-    voices.find(v=>v.lang==='en-US'&&v.name.includes('Daniel'))||
-    voices.find(v=>v.lang==='en-US')||voices[0]||null;
-  return cachedVoice;
-}
-window.speechSynthesis.onvoiceschanged=()=>{cachedVoice=null;getMaleVoice();};
+function getMaleVoice(){return null;}
 function speakAI(text,btn){
   if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();}
   if(currentSpeakBtn){currentSpeakBtn.classList.remove('speaking');currentSpeakBtn=null;}
